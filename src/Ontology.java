@@ -14,11 +14,11 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 
 class Ontology {
 	private final String SzpitalFile = "owl/szpital2.owl";
-	//private final String MammoFile = "owl/mammo.owl";
-	//private final String Szns = "http://pawel/szpital#";
+	// private final String MammoFile = "owl/mammo.owl";
+	// private final String Szns = "http://pawel/szpital#";
 	OntModel Model;
 
-	Ontology() {  // wczytywanie ontologii z pliku
+	Ontology() { // wczytywanie ontologii z pliku
 		Model = ModelFactory.createOntologyModel(
 				OntModelSpec.OWL_MEM_MINI_RULE_INF, null);
 		try {
@@ -30,6 +30,13 @@ class Ontology {
 		}
 	}
 
+	/**
+	 * Zwraca listê pacjentów danego lekarza lub wszystkich pacjentów gdy doctor
+	 * = null
+	 * 
+	 * @param doctor
+	 * @return
+	 */
 	List<Pacjent> getPatients(String doctor) {
 		List<Pacjent> pacjenci = new ArrayList<Pacjent>();
 		String querys;
@@ -51,15 +58,42 @@ class Ontology {
 		QueryExecution qe = QueryExecutionFactory.create(query, Model);
 		com.hp.hpl.jena.query.ResultSet results = qe.execSelect();
 		while (results.hasNext()) {
-		QuerySolution qs = results.next();
-		Pacjent p = new Pacjent();
-		p.nazwa = qs.getLiteral("y").getString();
-		p.PESEL = qs.getLiteral("z").getString();
-		pacjenci.add(p);
-		//p.stan = qs.getLiteral("s").getString();
+			QuerySolution qs = results.next();
+			Pacjent p = new Pacjent();
+			p.nazwa = qs.getLiteral("y").getString();
+			p.PESEL = qs.getLiteral("z").getString();
+			pacjenci.add(p);
+			// p.stan = qs.getLiteral("s").getString();
 		}
 		qe.close();
 		return pacjenci;
+	}
+
+	/**
+	 * Zwraca pacjenta po numerze PESEL
+	 * 
+	 * @param PESEL
+	 * @return
+	 */
+	Pacjent getPatientByPESEL(String PESEL) {
+		String querys = "PREFIX foaf: <http://pawel/szpital#>\r\n"
+				+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
+				+ "SELECT ?x\r\n" + "WHERE { \r\n"
+				+ "		?x rdf:type foaf:Patients .\r\n" + "		?x foaf:PESEL \""
+				+ PESEL + "\" .\r\n" + "}";
+		Query query = QueryFactory.create(querys);
+		QueryExecution qe = QueryExecutionFactory.create(query, Model);
+		com.hp.hpl.jena.query.ResultSet results = qe.execSelect();
+		Pacjent p = null;
+		if (results.hasNext()) {
+			QuerySolution qs = results.next();
+			p = new Pacjent();
+			p.nazwa = qs.getLiteral("y").getString();
+			p.PESEL = qs.getLiteral("z").getString();
+			// p.stan = qs.getLiteral("s").getString();
+		}
+		qe.close();
+		return p;
 	}
 
 }

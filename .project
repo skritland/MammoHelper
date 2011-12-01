@@ -14,10 +14,4 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
-	<variableList>
-		<variable>
-			<name>HOME</name>
-			<value>file:/E:/robocze/eclipse/gitconf</value>
-		</variable>
-	</variableList>
 </projectDescription>

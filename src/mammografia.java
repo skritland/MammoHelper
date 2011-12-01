@@ -20,7 +20,10 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
-
+/**
+ * @author skritland
+ *
+ */
 public class mammografia {
 
 	private String User;
@@ -30,14 +33,14 @@ public class mammografia {
 	private Text text;
 	private Table table;
 	private Text text_1;
+	TabFolder tabFolder;
 
 	public Combo admins;
 
 	public mammografia() {
 		Onto = new Ontology();
 	}
-	
-	
+
 	/**
 	 * Launch the application.
 	 * 
@@ -58,16 +61,15 @@ public class mammografia {
 	public void open() {
 		Display display = Display.getDefault();
 		createContents();
-		//initTasks();
+		// initTasks();
 		selectUser();
-		
-		Onto.getPatients(null);
-		
+		startInUserMode(); // uruchamia program dla odpowiedniego u¿ytkownika
+
 		if (User == null)
 			shell.dispose();
 		shell.open();
 		shell.layout();
-		
+
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) {
 				display.sleep();
@@ -75,6 +77,48 @@ public class mammografia {
 		}
 	}
 
+
+	private void startInUserMode() {
+		
+		// tworzenie tabeli pacjentów ***************************************
+		tabFolder.setSelection(2);
+		TableColumn tcNazwa = new TableColumn(table, SWT.NONE);
+		tcNazwa.setWidth(100);
+		tcNazwa.setText("Imiê i nazwisko");
+		TableColumn tcPESEL = new TableColumn(table, SWT.NONE);
+		tcPESEL.setWidth(70);
+		tcPESEL.setText("PESEL");
+
+		TableColumn tcStan = new TableColumn(table, SWT.NONE);
+		tcStan.setWidth(70);
+		tcStan.setText("Stan");
+
+		TableColumn tcOstZdj = new TableColumn(table, SWT.NONE);
+		tcOstZdj.setWidth(100);
+		tcOstZdj.setText("Ostatnie zdj\u0119cie");
+
+		java.util.List<Pacjent> pacli = Onto.getPatients(User);
+		java.util.ListIterator<Pacjent> iter = pacli.listIterator();
+
+		while (iter.hasNext()) {
+			Pacjent pac = iter.next();
+			TableItem tableItem = new TableItem(table, SWT.NONE);
+			tableItem
+					.setText(new String[] {
+							pac.nazwa,
+							pac.PESEL,
+							(pac.stan == null) ? "Nieznany" : "pac.stan",
+							(pac.ostatbad == null) ? "Nigdy" : pac.ostatbad
+									.toString() });
+		}
+
+		tcPESEL.pack();
+		tcStan.pack();
+	}
+
+	/**
+	 *  Wybiera u¿ytkownika programu
+	 */
 	private void selectUser() {
 		Display display = Display.getDefault();
 		final Shell sh = new Shell(shell, SWT.DIALOG_TRIM | SWT.PRIMARY_MODAL);
@@ -83,29 +127,30 @@ public class mammografia {
 		lblUytkownika.setAlignment(SWT.CENTER);
 		lblUytkownika.setText("U¿ytkownik: ");
 		admins = new Combo(sh, SWT.READ_ONLY);
-        new LoadPeople(admins).run();
-        admins.select(0);
-		
-        Button ok = new Button(sh, SWT.NONE);
-        ok.setText("OK");
-        ok.addSelectionListener(new SelectionAdapter() { 
-        	public void widgetSelected(SelectionEvent e) { 
-        	                 setUser(admins.getText());
-        	                 
-        	                 sh.dispose();
-        	            } }); 
+		new LoadPeople(admins).run();
+		admins.select(0);
+
+		Button ok = new Button(sh, SWT.NONE);
+		ok.setText("OK");
+		ok.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				setUser(admins.getText());
+
+				sh.dispose();
+			}
+		});
 		sh.pack();
-        sh.open();
-        while (!sh.isDisposed()) {
+		sh.open();
+		while (!sh.isDisposed()) {
 			if (!display.readAndDispatch()) {
 				display.sleep();
 			}
-			
+
 		}
-        ClblUytkownika.setText("Pracuje: " + User); 
+		ClblUytkownika.setText("Pracuje: " + User);
 		ClblUytkownika.pack();
 	}
-	
+
 	private void setUser(String us) {
 		User = us;
 	}
@@ -119,10 +164,10 @@ public class mammografia {
 		shell.setText("Mammografia");
 		shell.setLayout(null);
 
-//		admins = new Combo(shell, SWT.NONE);
-//		admins.setBounds(118, 10, 472, 22);
+		// admins = new Combo(shell, SWT.NONE);
+		// admins.setBounds(118, 10, 472, 22);
 
-		TabFolder tabFolder = new TabFolder(shell, SWT.NONE);
+		tabFolder = new TabFolder(shell, SWT.NONE);
 		tabFolder.setBounds(10, 38, 580, 370);
 
 		TabItem newPhoto = new TabItem(tabFolder, SWT.NONE);
@@ -261,7 +306,7 @@ public class mammografia {
 		lblKomentarz.setBounds(160, 216, 134, 24);
 
 		text_1 = new Text(composite_1, SWT.BORDER | SWT.MULTI);
-		text_1.setBounds(10, 233, 288, 55);
+		text_1.setBounds(10, 233, 200, 55);
 
 		TabItem browsePatients = new TabItem(tabFolder, SWT.NONE);
 		browsePatients.setText("Przegl\u0105danie pacjent\u00F3w");
@@ -274,33 +319,12 @@ public class mammografia {
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 
-		TableItem tableItem = new TableItem(table, SWT.NONE);
-		tableItem.setText(new String[] {});
-		tableItem.setText("Mariusz");
-
-		TableColumn tblclmnNewColumn = new TableColumn(table, SWT.NONE);
-		tblclmnNewColumn.setWidth(100);
-		tblclmnNewColumn.setText("Imi\u0119");
-
-		TableColumn tblclmnNewColumn_1 = new TableColumn(table, SWT.NONE);
-		tblclmnNewColumn_1.setWidth(112);
-		tblclmnNewColumn_1.setText("Nazwisko");
-
-		TableColumn tblclmnNewColumn_2 = new TableColumn(table, SWT.NONE);
-		tblclmnNewColumn_2.setWidth(133);
-		tblclmnNewColumn_2.setText("Ostatnie schorzenie");
-
-		TableColumn tblclmnOstatnieZdjcie = new TableColumn(table, SWT.NONE);
-		tblclmnOstatnieZdjcie.setWidth(100);
-		tblclmnOstatnieZdjcie.setText("Ostatnie zdj\u0119cie");
-
-		 ClblUytkownika = new Label(shell, SWT.NONE);
-		 ClblUytkownika.setEnabled(true);
-		 ClblUytkownika.setAlignment(SWT.CENTER);
-		 ClblUytkownika.setBounds(10, 14, 102, 14);
-		 ClblUytkownika.setText("Pracuje: ");
+		ClblUytkownika = new Label(shell, SWT.NONE);
+		ClblUytkownika.setEnabled(true);
+		ClblUytkownika.setAlignment(SWT.CENTER);
+		ClblUytkownika.setBounds(10, 14, 102, 14);
+		ClblUytkownika.setText("Pracuje: ");
 
 	}
 
-	
 }
