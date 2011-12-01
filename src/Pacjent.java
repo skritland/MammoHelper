@@ -6,4 +6,5 @@ class Pacjent {
 	public String PESEL;
 	public String stan;
 	public Date ostatbad; // ostatnie badanie mammograficzne
+	public String URI;
 }

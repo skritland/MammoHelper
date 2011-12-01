@@ -22,7 +22,7 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * @author skritland
- *
+ * 
  */
 public class mammografia {
 
@@ -77,47 +77,61 @@ public class mammografia {
 		}
 	}
 
-
 	private void startInUserMode() {
-		
 		// tworzenie tabeli pacjentów ***************************************
+		TabItem browsePatients = new TabItem(tabFolder, SWT.NONE);
+		browsePatients.setText("Przegl\u0105danie pacjent\u00F3w");
+
+		Composite compPacjenci = new Composite(tabFolder, SWT.NONE);
+		browsePatients.setControl(compPacjenci);
 		tabFolder.setSelection(2);
+
+		table = new Table(compPacjenci, SWT.BORDER | SWT.FULL_SELECTION);
+		table.setBounds(10, 10, 340, 312);
+		table.setHeaderVisible(true);
+		table.setLinesVisible(true);
+
 		TableColumn tcNazwa = new TableColumn(table, SWT.NONE);
 		tcNazwa.setWidth(100);
 		tcNazwa.setText("Imiê i nazwisko");
 		TableColumn tcPESEL = new TableColumn(table, SWT.NONE);
-		tcPESEL.setWidth(70);
+		tcPESEL.setWidth(78);
 		tcPESEL.setText("PESEL");
 
 		TableColumn tcStan = new TableColumn(table, SWT.NONE);
-		tcStan.setWidth(70);
+		tcStan.setWidth(56);
 		tcStan.setText("Stan");
 
 		TableColumn tcOstZdj = new TableColumn(table, SWT.NONE);
 		tcOstZdj.setWidth(100);
 		tcOstZdj.setText("Ostatnie zdj\u0119cie");
 
-		java.util.List<Pacjent> pacli = Onto.getPatients(User);
-		java.util.ListIterator<Pacjent> iter = pacli.listIterator();
-
-		while (iter.hasNext()) {
-			Pacjent pac = iter.next();
-			TableItem tableItem = new TableItem(table, SWT.NONE);
-			tableItem
-					.setText(new String[] {
-							pac.nazwa,
-							pac.PESEL,
-							(pac.stan == null) ? "Nieznany" : "pac.stan",
-							(pac.ostatbad == null) ? "Nigdy" : pac.ostatbad
-									.toString() });
-		}
-
-		tcPESEL.pack();
-		tcStan.pack();
+		fillPatientsTable();
+		
+		// przycisk dodaj pacjenta z bazy*************************
+		Button dodipac = new Button(compPacjenci, SWT.NONE);
+		dodipac.setText("Dodaj pacjenta z bazy");
+		dodipac.setBounds(15, 340, 130, 40);
+		dodipac.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				DodIstPac okno = new DodIstPac(shell);
+				okno.open(Onto, User);
+				fillPatientsTable();
+			}
+		});
+		// przycisk dodaj pacjenta do bazy************************
+		Button dodnpac = new Button(compPacjenci, SWT.NONE);
+		dodnpac.setText("Dodaj nowego pacjenta");
+		dodnpac.setBounds(150, 340, 130, 40);
+		dodnpac.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				return;
+			}
+		});
 	}
 
 	/**
-	 *  Wybiera u¿ytkownika programu
+	 * Wybiera u¿ytkownika programu
 	 */
 	private void selectUser() {
 		Display display = Display.getDefault();
@@ -160,7 +174,7 @@ public class mammografia {
 	 */
 	protected void createContents() {
 		shell = new Shell();
-		shell.setSize(600, 440);
+		shell.setSize(800, 540);
 		shell.setText("Mammografia");
 		shell.setLayout(null);
 
@@ -168,7 +182,7 @@ public class mammografia {
 		// admins.setBounds(118, 10, 472, 22);
 
 		tabFolder = new TabFolder(shell, SWT.NONE);
-		tabFolder.setBounds(10, 38, 580, 370);
+		tabFolder.setBounds(10, 38, 780, 470);
 
 		TabItem newPhoto = new TabItem(tabFolder, SWT.NONE);
 		newPhoto.setText("Dodawanie zdj\u0119cia");
@@ -308,22 +322,31 @@ public class mammografia {
 		text_1 = new Text(composite_1, SWT.BORDER | SWT.MULTI);
 		text_1.setBounds(10, 233, 200, 55);
 
-		TabItem browsePatients = new TabItem(tabFolder, SWT.NONE);
-		browsePatients.setText("Przegl\u0105danie pacjent\u00F3w");
-
-		Composite composite_2 = new Composite(tabFolder, SWT.NONE);
-		browsePatients.setControl(composite_2);
-
-		table = new Table(composite_2, SWT.BORDER | SWT.FULL_SELECTION);
-		table.setBounds(10, 10, 540, 312);
-		table.setHeaderVisible(true);
-		table.setLinesVisible(true);
-
 		ClblUytkownika = new Label(shell, SWT.NONE);
 		ClblUytkownika.setEnabled(true);
 		ClblUytkownika.setAlignment(SWT.CENTER);
 		ClblUytkownika.setBounds(10, 14, 102, 14);
 		ClblUytkownika.setText("Pracuje: ");
+
+	}
+
+	private void fillPatientsTable() {
+		table.removeAll();
+		java.util.List<Pacjent> pacli = Onto.getPatients(User, true);
+		java.util.ListIterator<Pacjent> iter = pacli.listIterator();
+
+		while (iter.hasNext()) {
+			Pacjent pac = iter.next();
+			TableItem tableItem = new TableItem(table, SWT.NONE);
+			tableItem
+					.setText(new String[] {
+							pac.nazwa,
+							pac.PESEL,
+							(pac.stan == null) ? "Nieznany" : "pac.stan",
+							(pac.ostatbad == null) ? "Nigdy" : pac.ostatbad
+									.toString() });
+		}
+
 
 	}
 
