@@ -125,7 +125,7 @@ public class mammografia {
 		dodnpac.setBounds(150, 340, 130, 40);
 		dodnpac.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				return;
+				new DodNowPac(shell, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL, Onto, User).open();
 			}
 		});
 	}

@@ -164,4 +164,9 @@ class Ontology {
 		save();		
 	}
 
+	public void addNewPatient(Pacjent pac, Worker workerByName) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
