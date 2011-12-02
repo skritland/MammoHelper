@@ -37,7 +37,7 @@ public class mammografia {
 	private Table table;
 	private Text text_1;
 	TabFolder tabFolder;
-	private java.util.List<Zdjecia> zdjeciaWyswZdjecia; //wyświetlane zdjęcia pacjenta
+	private java.util.List<Zdjecia> WyswZdjecia; //wyświetlane zdjęcia pacjenta
 
 	public Combo admins;
 	private Table lista_zdjec;
@@ -157,11 +157,11 @@ public class mammografia {
 		tblclmnOcena.setText("Ocena");
 
 		Button btnDodajZdjcie_1 = new Button(zdjecia, SWT.NONE);
-		btnDodajZdjcie_1.setBounds(0, 334, 76, 23);
+		btnDodajZdjcie_1.setBounds(10, 334, 76, 23);
 		btnDodajZdjcie_1.setText("Dodaj zdjęcie");
 
 		Button btnUsuZdjcie = new Button(zdjecia, SWT.NONE);
-		btnUsuZdjcie.setBounds(136, 334, 68, 23);
+		btnUsuZdjcie.setBounds(116, 334, 68, 23);
 		btnUsuZdjcie.setText("Usuń zdjęcie");
 
 		Button btnUsuPacjenta = new Button(compPacjenci, SWT.NONE);
@@ -414,7 +414,7 @@ public class mammografia {
 			TableItem tableItem = new TableItem(lista_zdjec, SWT.NONE);
 
 			tableItem.setText(new String[] { sdf.format(zdje.dataBadania),
-					(zdje.ocena == null) ? "Nie diagnozowano" : zdje.ocena, });
+					(zdje.ocena == null) ? "Brak diagnozy" : zdje.ocena, });
 		}
 
 	}
