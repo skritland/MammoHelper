@@ -108,6 +108,7 @@ public class mammografia {
 				Pacjent pac = Onto.getPatientByPESEL(table.getSelection()[0]
 						.getText(1));
 				fillImagesTable(Onto.getImagesOfPatient(pac));
+				setImagesPreview(null);
 
 			}
 		});
@@ -199,7 +200,7 @@ public class mammografia {
 			public void widgetSelected(SelectionEvent e) {
 				WyswZdjecia = (Zdjecia) lista_zdjec.getSelection()[0].getData();
 				podgladZdjec = new ZdjPodglad(WyswZdjecia.zdjecia);
-				btnPodglad.setImage(podgladZdjec.getImage());
+				setImagesPreview(podgladZdjec);
 			}
 		});
 		lista_zdjec.setBounds(5, 20, 190, 350);
@@ -229,7 +230,8 @@ public class mammografia {
 
 		btnPodglad = new Button(grpPodgld, SWT.FLAT);
 		btnPodglad.setBounds(10, 47, 180, 180);
-		btnPodglad.setText("New Button");
+		btnPodglad.setText("Podglad");
+		btnPodglad.setAlignment(SWT.CENTER);
 
 		Button btnPrev = new Button(grpPodgld, SWT.ARROW | SWT.LEFT);
 		btnPrev.setBounds(10, 233, 40, 23);
@@ -237,7 +239,7 @@ public class mammografia {
 		btnPrev.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				podgladZdjec.previous();
-				btnPodglad.setImage(podgladZdjec.getImage());
+				setImagesPreview(podgladZdjec);
 			}
 		});
 
@@ -247,7 +249,7 @@ public class mammografia {
 		btnNext.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				podgladZdjec.next();
-				btnPodglad.setImage(podgladZdjec.getImage());
+				setImagesPreview(podgladZdjec);
 			}
 		});
 
@@ -380,14 +382,14 @@ public class mammografia {
 
 				ImageData ideaImage = new ImageData(path);
 				Image im = new Image(Display.getDefault(), ideaImage);
-
+				
 				int width = im.getBounds().width;
 				int height = im.getBounds().height;
 
 				double ratio = (double) 266 / (double) width;
 				height = (int) (height * ratio);
 				width = 266;
-
+				
 				Image scaled = new Image(Display.getDefault(), im
 						.getImageData().scaledTo(width, height));
 
@@ -496,5 +498,13 @@ public class mammografia {
 			tableItem.setData(zdje);
 		}
 
+	}
+
+	private void setImagesPreview(ZdjPodglad pz) {
+		if (pz == null) {
+			btnPodglad.setImage(null);
+		} else {
+			btnPodglad.setImage(pz.getImage());
+		}
 	}
 }
