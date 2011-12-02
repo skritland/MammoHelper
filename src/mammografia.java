@@ -63,7 +63,7 @@ public class mammografia {
 		createContents();
 		// initTasks();
 		selectUser();
-		startInUserMode(); // uruchamia program dla odpowiedniego u¿ytkownika
+		startInUserMode(); // uruchamia program dla odpowiedniego uÂ¿ytkownika
 
 		if (User == null)
 			shell.dispose();
@@ -78,7 +78,7 @@ public class mammografia {
 	}
 
 	private void startInUserMode() {
-		// tworzenie tabeli pacjentów ***************************************
+		// tworzenie tabeli pacjentÃ³w ***************************************
 		TabItem browsePatients = new TabItem(tabFolder, SWT.NONE);
 		browsePatients.setText("Przegl\u0105danie pacjent\u00F3w");
 
@@ -93,7 +93,7 @@ public class mammografia {
 
 		TableColumn tcNazwa = new TableColumn(table, SWT.NONE);
 		tcNazwa.setWidth(100);
-		tcNazwa.setText("Imiê i nazwisko");
+		tcNazwa.setText("ImiÃª i nazwisko");
 		TableColumn tcPESEL = new TableColumn(table, SWT.NONE);
 		tcPESEL.setWidth(78);
 		tcPESEL.setText("PESEL");
@@ -107,7 +107,7 @@ public class mammografia {
 		tcOstZdj.setText("Ostatnie zdj\u0119cie");
 
 		fillPatientsTable();
-		
+
 		// przycisk dodaj pacjenta z bazy*************************
 		Button dodipac = new Button(compPacjenci, SWT.NONE);
 		dodipac.setText("Dodaj pacjenta z bazy");
@@ -126,12 +126,13 @@ public class mammografia {
 		dodnpac.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				new DodNowPac(shell, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL, Onto, User).open();
+				fillPatientsTable();
 			}
 		});
 	}
 
 	/**
-	 * Wybiera u¿ytkownika programu
+	 * Wybiera uÂ¿ytkownika programu
 	 */
 	private void selectUser() {
 		Display display = Display.getDefault();
@@ -139,7 +140,7 @@ public class mammografia {
 		sh.setLayout(new FillLayout(SWT.VERTICAL));
 		Label lblUytkownika = new Label(sh, SWT.NONE);
 		lblUytkownika.setAlignment(SWT.CENTER);
-		lblUytkownika.setText("U¿ytkownik: ");
+		lblUytkownika.setText("UÂ¿ytkownik: ");
 		admins = new Combo(sh, SWT.READ_ONLY);
 		new LoadPeople(admins).run();
 		admins.select(0);
@@ -189,21 +190,22 @@ public class mammografia {
 
 		Composite composite = new Composite(tabFolder, SWT.NONE);
 		newPhoto.setControl(composite);
+		composite.setLayout(null);
 
 		Label lblPodajSciekePliku = new Label(composite, SWT.NONE);
-		lblPodajSciekePliku.setAlignment(SWT.RIGHT);
 		lblPodajSciekePliku.setBounds(22, 34, 132, 21);
+		lblPodajSciekePliku.setAlignment(SWT.RIGHT);
 		lblPodajSciekePliku.setText("Podaj scie\u017Cke pliku");
 
 		Label lblWybierzPacjenta = new Label(composite, SWT.NONE);
-		lblWybierzPacjenta.setAlignment(SWT.RIGHT);
 		lblWybierzPacjenta.setBounds(32, 60, 122, 14);
+		lblWybierzPacjenta.setAlignment(SWT.RIGHT);
 		lblWybierzPacjenta.setText("Wybierz Pacjenta");
 
 		Label lblDataWykonania = new Label(composite, SWT.NONE);
+		lblDataWykonania.setBounds(32, 86, 122, 14);
 		lblDataWykonania.setText("Data wykonania");
 		lblDataWykonania.setAlignment(SWT.RIGHT);
-		lblDataWykonania.setBounds(32, 86, 122, 14);
 
 		DateTime dateTime = new DateTime(composite, SWT.BORDER);
 		dateTime.setBounds(169, 86, 92, 27);
@@ -213,7 +215,7 @@ public class mammografia {
 		dateTime_1.setBounds(267, 86, 66, 27);
 
 		Combo combo_1 = new Combo(composite, SWT.NONE);
-		combo_1.setBounds(169, 58, 364, 22);
+		combo_1.setBounds(169, 58, 364, 21);
 
 		Button btnDodajZdjcie = new Button(composite, SWT.NONE);
 		btnDodajZdjcie.setBounds(167, 131, 113, 28);
@@ -224,9 +226,11 @@ public class mammografia {
 		text.setEnabled(false);
 
 		final Label photo = new Label(composite, SWT.BORDER);
+		photo.setBounds(300, 131, 233, 177);
 		photo.setAlignment(SWT.CENTER);
 
 		Button btnNewButton = new Button(composite, SWT.NONE);
+		btnNewButton.setBounds(439, 27, 94, 28);
 		btnNewButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -264,10 +268,7 @@ public class mammografia {
 				photo.setImage(scaled);
 			}
 		});
-		btnNewButton.setBounds(439, 27, 94, 28);
 		btnNewButton.setText("wybierz...");
-
-		photo.setBounds(300, 131, 233, 177);
 		photo.setText("Podgl\u0105d:");
 
 		TabItem describePhoto = new TabItem(tabFolder, SWT.NONE);
@@ -349,5 +350,4 @@ public class mammografia {
 
 
 	}
-
 }

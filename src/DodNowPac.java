@@ -67,10 +67,10 @@ public class DodNowPac extends Dialog {
 		lblPesel.setText("PESEL:");
 		
 		txtImieinazwisko = new Text(shlDodajNowegoPacjenta, SWT.BORDER);
-		txtImieinazwisko.setBounds(96, 26, 76, 19);
+		txtImieinazwisko.setBounds(96, 26, 126, 19);
 		
 		txtPesel = new Text(shlDodajNowegoPacjenta, SWT.BORDER);
-		txtPesel.setBounds(96, 51, 76, 19);
+		txtPesel.setBounds(96, 51, 126, 19);
 		
 		Button btnDodaj = new Button(shlDodajNowegoPacjenta, SWT.NONE);
 		btnDodaj.addSelectionListener(new SelectionAdapter() {
@@ -89,6 +89,7 @@ public class DodNowPac extends Dialog {
 				pac.PESEL = txtPesel.getText();
 				
 				ontMod.addNewPatient(pac, ontMod.getWorkerByName(user));
+				shlDodajNowegoPacjenta.dispose();
 			}
 		});
 		btnDodaj.setBounds(10, 105, 68, 23);

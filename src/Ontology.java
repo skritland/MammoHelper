@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.hp.hpl.jena.ontology.Individual;
+import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.query.Query;
@@ -37,9 +38,8 @@ class Ontology {
 			e.printStackTrace();
 		}
 	}
-	
-	void save()
-	{
+
+	void save() {
 		try {
 			FOS = new FileOutputStream(SzpitalFile);
 		} catch (FileNotFoundException e) {
@@ -74,13 +74,11 @@ class Ontology {
 						+ "SELECT ?y ?z WHERE { \r\n"
 						+ "		?x rdf:type foaf:Patients.\r\n"
 						+ "		?x foaf:name ?y .\r\n"
-						+ "		?x foaf:PESEL ?z .\r\n"
-						+ "		OPTIONAL {\r\n"
+						+ "		?x foaf:PESEL ?z .\r\n" + "		OPTIONAL {\r\n"
 						+ "		?x foaf:has_Doctor ?lek .\r\n"
-						+ "		?lek  foaf:name ?imie .\r\n"
-						+ "		}\r\n"
-						+ "		FILTER (!bound(?imie) || ?imie != \"" + doctor + "\") .\r\n"
-						+ "	}";
+						+ "		?lek  foaf:name ?imie .\r\n" + "		}\r\n"
+						+ "		FILTER (!bound(?imie) || ?imie != \"" + doctor
+						+ "\") .\r\n" + "	}";
 		} else
 			querys = "PREFIX foaf: <http://pawel/szpital#>\r\n"
 					+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
@@ -113,10 +111,8 @@ class Ontology {
 		String querys = "PREFIX foaf: <http://pawel/szpital#>\r\n"
 				+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
 				+ "SELECT ?x ?y\r\n" + "WHERE { \r\n"
-				+ "		?x rdf:type foaf:Patients .\r\n" +
-				"		?x foaf:name ?y ." 
-				+ "		?x foaf:PESEL \""
-				+ PESEL + "\" .\r\n" + "}";
+				+ "		?x rdf:type foaf:Patients .\r\n" + "		?x foaf:name ?y ."
+				+ "		?x foaf:PESEL \"" + PESEL + "\" .\r\n" + "}";
 		Query query = QueryFactory.create(querys);
 		QueryExecution qe = QueryExecutionFactory.create(query, OModel);
 		com.hp.hpl.jena.query.ResultSet results = qe.execSelect();
@@ -132,15 +128,13 @@ class Ontology {
 		qe.close();
 		return p;
 	}
-	
-	Worker getWorkerByName(String worname)
-	{
+
+	Worker getWorkerByName(String worname) {
 		String querys = "PREFIX foaf: <http://pawel/szpital#>\r\n"
 				+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
 				+ "SELECT ?x ?z\r\n" + "WHERE { \r\n"
-				+ "		?x rdf:type foaf:Workers .\r\n" +
-				"		?x foaf:name \"" + worname + "\" .\r\n" 
-				+ "		?x foaf:PESEL ?z .\r\n" + "}";
+				+ "		?x rdf:type foaf:Workers .\r\n" + "		?x foaf:name \""
+				+ worname + "\" .\r\n" + "		?x foaf:PESEL ?z .\r\n" + "}";
 		Query query = QueryFactory.create(querys);
 		QueryExecution qe = QueryExecutionFactory.create(query, OModel);
 		com.hp.hpl.jena.query.ResultSet results = qe.execSelect();
@@ -156,17 +150,29 @@ class Ontology {
 		qe.close();
 		return p;
 	}
-	
+
 	void addDoctorToPatient(String docuri, String pacuri) {
 		Individual pac = OModel.getIndividual(pacuri);
-		//System.out.println(pac);
-		pac.addProperty(OModel.getProperty(Szns + "has_Doctor"), OModel.getIndividual(docuri));
-		save();		
+		// System.out.println(pac);
+		pac.addProperty(OModel.getProperty(Szns + "has_Doctor"),
+				OModel.getIndividual(docuri));
+		save();
 	}
 
 	public void addNewPatient(Pacjent pac, Worker workerByName) {
-		// TODO Auto-generated method stub
-		
+		OntClass patients = OModel.getOntClass(Szns + "Patients");
+		String pom = pac.nazwa.replace(' ', '_');
+		Individual patient = OModel.createIndividual(Szns + pom, patients);
+		patient.addProperty(OModel.getProperty(Szns + "name"), pac.nazwa);
+		patient.addProperty(OModel.getProperty(Szns + "PESEL"), pac.PESEL);
+		Individual wor = OModel.getIndividual(workerByName.URI);
+		if (wor.getOntClass().getURI() == OModel.getOntClass(Szns + "Doctors")
+				.getURI()) {
+			patient.addProperty(OModel.getProperty(Szns + "has_Doctor"),
+					OModel.getIndividual(workerByName.URI));
+		}
+		save();
+
 	}
 
 }
