@@ -246,4 +246,11 @@ class Ontology {
 		save();
 	}
 
+	public void removeDoctorFromPatient(Worker wUser, Pacjent pac) {
+		Individual pacjent = OModel.getIndividual(pac.URI);
+		pacjent.removeProperty(OModel.getProperty(Szns + "has_Doctor"), OModel.getIndividual(wUser.URI));
+		save();
+		
+	}
+
 }

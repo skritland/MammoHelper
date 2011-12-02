@@ -37,7 +37,7 @@ public class mammografia {
 	private Table table;
 	private Text text_1;
 	TabFolder tabFolder;
-	private java.util.List<Zdjecia> WyswZdjecia; //wyświetlane zdjęcia pacjenta
+	private java.util.List<Zdjecia> WyswZdjecia; // wyświetlane zdjęcia pacjenta
 
 	public Combo admins;
 	private Table lista_zdjec;
@@ -174,7 +174,8 @@ public class mammografia {
 		btnUsuPacjenta.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				Pacjent pac = Onto.getPatientByPESEL(table.getSelection()[0].getText(1));
+				Pacjent pac = Onto.getPatientByPESEL(table.getSelection()[0]
+						.getText(1));
 				Onto.removePatient(pac);
 				fillPatientsTable();
 				fillImagesTable(null);
@@ -184,7 +185,18 @@ public class mammografia {
 		btnUsuPacjenta.setText("Usuń pacjenta");
 
 		Button btnZrezygnujZPacjenta = new Button(compPacjenci, SWT.NONE);
-		btnZrezygnujZPacjenta.setBounds(10, 388, 135, 30);
+		btnZrezygnujZPacjenta.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				Pacjent pac = Onto.getPatientByPESEL(table.getSelection()[0]
+						.getText(1));
+				Onto.removeDoctorFromPatient(WUser, pac);
+				fillPatientsTable();
+				fillImagesTable(null);
+
+			}
+		});
+		btnZrezygnujZPacjenta.setBounds(15, 388, 130, 30);
 		btnZrezygnujZPacjenta.setText("Zrezygnuj z pacjenta");
 		dodnpac.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
@@ -226,7 +238,8 @@ public class mammografia {
 			}
 
 		}
-		ClblUytkownika.setText("Pracuje: " + User + " " + ((WUser.isDoctor)?("(LEKARZ)"):("(LABORANT)") ) );
+		ClblUytkownika.setText("Pracuje: " + User + " "
+				+ ((WUser.isDoctor) ? ("(LEKARZ)") : ("(LABORANT)")));
 		ClblUytkownika.pack();
 	}
 
@@ -421,7 +434,8 @@ public class mammografia {
 	private void fillImagesTable(java.util.List<Zdjecia> zdjecia) {
 		WyswZdjecia = zdjecia;
 		lista_zdjec.removeAll();
-		if (zdjecia == null) return;
+		if (zdjecia == null)
+			return;
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		java.util.ListIterator<Zdjecia> iter = zdjecia.listIterator();
 
