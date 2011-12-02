@@ -1,478 +1,250 @@
-<?xml version="1.0"?>
-
-
-<!DOCTYPE rdf:RDF [
-    <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
-    <!ENTITY szpital "http://pawel/szpital#66050737417" >
-    <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
-    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
-    <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
-]>
-
-
-<rdf:RDF xmlns="http://pawel/szpital#"
-     xml:base="http://pawel/szpital"
-     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
-     xmlns:owl="http://www.w3.org/2002/07/owl#"
-     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
-     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-     xmlns:szpital="http://pawel/szpital#66050737417">
-    <owl:Ontology rdf:about="http://pawel/szpital">
-        <creator xml:lang="pl">Paweł Śpiewak</creator>
-        <title xml:lang="pl">Szpital</title>
-    </owl:Ontology>
-    
-
-
-    <!-- 
-    ///////////////////////////////////////////////////////////////////////////////////////
-    //
-    // Annotation properties
-    //
-    ///////////////////////////////////////////////////////////////////////////////////////
-     -->
-
-    <owl:AnnotationProperty rdf:about="http://pawel/szpital#title"/>
-    <owl:AnnotationProperty rdf:about="http://pawel/szpital#creator"/>
-    
-
-
-    <!-- 
-    ///////////////////////////////////////////////////////////////////////////////////////
-    //
-    // Datatypes
-    //
-    ///////////////////////////////////////////////////////////////////////////////////////
-     -->
-
-    
-
-
-    <!-- 
-    ///////////////////////////////////////////////////////////////////////////////////////
-    //
-    // Object Properties
-    //
-    ///////////////////////////////////////////////////////////////////////////////////////
-     -->
-
-    
-
-
-    <!-- http://pawel/szpital#doctor_has_data -->
-
-    <owl:ObjectProperty rdf:about="http://pawel/szpital#doctor_has_data">
-        <rdfs:domain rdf:resource="http://pawel/szpital#Doctors"/>
-    </owl:ObjectProperty>
-    
-
-
-    <!-- http://pawel/szpital#has_Doctor -->
-
-    <owl:ObjectProperty rdf:about="http://pawel/szpital#has_Doctor">
-        <rdfs:subPropertyOf rdf:resource="http://pawel/szpital#patient_has_data"/>
-    </owl:ObjectProperty>
-    
-
-
-    <!-- http://pawel/szpital#has_Patient -->
-
-    <owl:ObjectProperty rdf:about="http://pawel/szpital#has_Patient">
-        <rdfs:subPropertyOf rdf:resource="http://pawel/szpital#doctor_has_data"/>
-        <owl:inverseOf rdf:resource="http://pawel/szpital#has_Doctor"/>
-    </owl:ObjectProperty>
-    
-
-
-    <!-- http://pawel/szpital#has_group -->
-
-    <owl:ObjectProperty rdf:about="http://pawel/szpital#has_group">
-        <owl:inverseOf rdf:resource="http://pawel/szpital#has_images"/>
-        <rdfs:subPropertyOf rdf:resource="http://pawel/szpital#mammo_image_has_data"/>
-    </owl:ObjectProperty>
-    
-
-
-    <!-- http://pawel/szpital#has_images -->
-
-    <owl:ObjectProperty rdf:about="http://pawel/szpital#has_images">
-        <rdfs:subPropertyOf rdf:resource="http://pawel/szpital#mammo_image_has_data"/>
-    </owl:ObjectProperty>
-    
-
-
-    <!-- http://pawel/szpital#has_mammo_image -->
-
-    <owl:ObjectProperty rdf:about="http://pawel/szpital#has_mammo_image">
-        <rdfs:subPropertyOf rdf:resource="http://pawel/szpital#patient_has_data"/>
-    </owl:ObjectProperty>
-    
-
-
-    <!-- http://pawel/szpital#mammo_image_has_data -->
-
-    <owl:ObjectProperty rdf:about="http://pawel/szpital#mammo_image_has_data"/>
-    
-
-
-    <!-- http://pawel/szpital#of_Patient -->
-
-    <owl:ObjectProperty rdf:about="http://pawel/szpital#of_Patient">
-        <owl:inverseOf rdf:resource="http://pawel/szpital#has_mammo_image"/>
-        <rdfs:subPropertyOf rdf:resource="http://pawel/szpital#mammo_image_has_data"/>
-    </owl:ObjectProperty>
-    
-
-
-    <!-- http://pawel/szpital#patient_has_data -->
-
-    <owl:ObjectProperty rdf:about="http://pawel/szpital#patient_has_data">
-        <rdfs:domain rdf:resource="http://pawel/szpital#Patients"/>
-    </owl:ObjectProperty>
-    
-
-
-    <!-- 
-    ///////////////////////////////////////////////////////////////////////////////////////
-    //
-    // Data properties
-    //
-    ///////////////////////////////////////////////////////////////////////////////////////
-     -->
-
-    
-
-
-    <!-- http://pawel/szpital#PESEL -->
-
-    <owl:DatatypeProperty rdf:about="http://pawel/szpital#PESEL">
-        <rdfs:subPropertyOf rdf:resource="http://pawel/szpital#Person_properties"/>
-        <rdfs:range rdf:resource="&xsd;string"/>
-    </owl:DatatypeProperty>
-    
-
-
-    <!-- http://pawel/szpital#Patient_properties -->
-
-    <owl:DatatypeProperty rdf:about="http://pawel/szpital#Patient_properties"/>
-    
-
-
-    <!-- http://pawel/szpital#Person_properties -->
-
-    <owl:DatatypeProperty rdf:about="http://pawel/szpital#Person_properties"/>
-    
-
-
-    <!-- http://pawel/szpital#State -->
-
-    <owl:DatatypeProperty rdf:about="http://pawel/szpital#State">
-        <rdfs:subPropertyOf rdf:resource="http://pawel/szpital#Patient_properties"/>
-        <rdfs:range rdf:resource="&xsd;string"/>
-    </owl:DatatypeProperty>
-    
-
-
-    <!-- http://pawel/szpital#creat_date -->
-
-    <owl:DatatypeProperty rdf:about="http://pawel/szpital#creat_date">
-        <rdfs:subPropertyOf rdf:resource="http://pawel/szpital#mammo_image_properties"/>
-        <rdfs:range rdf:resource="&xsd;dateTime"/>
-    </owl:DatatypeProperty>
-    
-
-
-    <!-- http://pawel/szpital#filename -->
-
-    <owl:DatatypeProperty rdf:about="http://pawel/szpital#filename">
-        <rdfs:subPropertyOf rdf:resource="http://pawel/szpital#mammo_image_properties"/>
-        <rdfs:range rdf:resource="&xsd;string"/>
-    </owl:DatatypeProperty>
-    
-
-
-    <!-- http://pawel/szpital#im_view -->
-
-    <owl:DatatypeProperty rdf:about="http://pawel/szpital#im_view">
-        <rdfs:subPropertyOf rdf:resource="http://pawel/szpital#mammo_image_properties"/>
-    </owl:DatatypeProperty>
-    
-
-
-    <!-- http://pawel/szpital#mammo_image_properties -->
-
-    <owl:DatatypeProperty rdf:about="http://pawel/szpital#mammo_image_properties"/>
-    
-
-
-    <!-- http://pawel/szpital#name -->
-
-    <owl:DatatypeProperty rdf:about="http://pawel/szpital#name">
-        <rdfs:subPropertyOf rdf:resource="http://pawel/szpital#Person_properties"/>
-        <rdfs:range rdf:resource="&xsd;string"/>
-    </owl:DatatypeProperty>
-    
-
-
-    <!-- 
-    ///////////////////////////////////////////////////////////////////////////////////////
-    //
-    // Classes
-    //
-    ///////////////////////////////////////////////////////////////////////////////////////
-     -->
-
-    
-
-
-    <!-- http://pawel/szpital#Doctors -->
-
-    <owl:Class rdf:about="http://pawel/szpital#Doctors">
-        <rdfs:subClassOf rdf:resource="http://pawel/szpital#Workers"/>
-        <rdfs:subClassOf>
-            <owl:Restriction>
-                <owl:onProperty rdf:resource="http://pawel/szpital#has_Patient"/>
-                <owl:someValuesFrom rdf:resource="http://pawel/szpital#Patients"/>
-            </owl:Restriction>
-        </rdfs:subClassOf>
-    </owl:Class>
-    
-
-
-    <!-- http://pawel/szpital#Individual_images -->
-
-    <owl:Class rdf:about="http://pawel/szpital#Individual_images">
-        <rdfs:subClassOf rdf:resource="http://pawel/szpital#Mammography_images"/>
-    </owl:Class>
-    
-
-
-    <!-- http://pawel/szpital#Laboratory_assistants -->
-
-    <owl:Class rdf:about="http://pawel/szpital#Laboratory_assistants">
-        <rdfs:subClassOf rdf:resource="http://pawel/szpital#Workers"/>
-    </owl:Class>
-    
-
-
-    <!-- http://pawel/szpital#Mammography_images -->
-
-    <owl:Class rdf:about="http://pawel/szpital#Mammography_images"/>
-    
-
-
-    <!-- http://pawel/szpital#Patients -->
-
-    <owl:Class rdf:about="http://pawel/szpital#Patients">
-        <rdfs:subClassOf rdf:resource="http://pawel/szpital#People"/>
-        <rdfs:subClassOf>
-            <owl:Restriction>
-                <owl:onProperty rdf:resource="http://pawel/szpital#State"/>
-                <owl:qualifiedCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:qualifiedCardinality>
-                <owl:onDataRange rdf:resource="&xsd;string"/>
-            </owl:Restriction>
-        </rdfs:subClassOf>
-        <rdfs:subClassOf>
-            <owl:Restriction>
-                <owl:onProperty rdf:resource="http://pawel/szpital#has_Doctor"/>
-                <owl:someValuesFrom rdf:resource="http://pawel/szpital#Doctors"/>
-            </owl:Restriction>
-        </rdfs:subClassOf>
-    </owl:Class>
-    
-
-
-    <!-- http://pawel/szpital#People -->
-
-    <owl:Class rdf:about="http://pawel/szpital#People">
-        <rdfs:subClassOf>
-            <owl:Restriction>
-                <owl:onProperty rdf:resource="http://pawel/szpital#name"/>
-                <owl:qualifiedCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:qualifiedCardinality>
-                <owl:onDataRange rdf:resource="&xsd;string"/>
-            </owl:Restriction>
-        </rdfs:subClassOf>
-        <rdfs:subClassOf>
-            <owl:Restriction>
-                <owl:onProperty rdf:resource="http://pawel/szpital#PESEL"/>
-                <owl:qualifiedCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:qualifiedCardinality>
-                <owl:onDataRange rdf:resource="&xsd;string"/>
-            </owl:Restriction>
-        </rdfs:subClassOf>
-        <owl:hasKey rdf:parseType="Collection">
-            <rdf:Description rdf:about="http://pawel/szpital#PESEL"/>
-        </owl:hasKey>
-    </owl:Class>
-    
-
-
-    <!-- http://pawel/szpital#Workers -->
-
-    <owl:Class rdf:about="http://pawel/szpital#Workers">
-        <rdfs:subClassOf rdf:resource="http://pawel/szpital#People"/>
-    </owl:Class>
-    
-
-
-    <!-- 
-    ///////////////////////////////////////////////////////////////////////////////////////
-    //
-    // Individuals
-    //
-    ///////////////////////////////////////////////////////////////////////////////////////
-     -->
-
-    
-
-
-    <!-- http://pawel/szpital#66050737417_201112021122 -->
-
-    <owl:NamedIndividual rdf:about="&szpital;_201112021122">
-        <rdf:type rdf:resource="http://pawel/szpital#Mammography_images"/>
-        <creat_date rdf:datatype="&xsd;dateTime">2011-12-02T11:22:00</creat_date>
-        <of_Patient rdf:resource="http://pawel/szpital#Zofia_Krzywonos"/>
-    </owl:NamedIndividual>
-    
-
-
-    <!-- http://pawel/szpital#66050737417_201112021122_LEFT_CC -->
-
-    <owl:NamedIndividual rdf:about="&szpital;_201112021122_LEFT_CC">
-        <rdf:type rdf:resource="http://pawel/szpital#Individual_images"/>
-        <filename>66050737417_201112021122_LEFT_CC.gif</filename>
-        <im_view>LEFT_CC</im_view>
-        <has_group rdf:resource="&szpital;_201112021122"/>
-    </owl:NamedIndividual>
-    
-
-
-    <!-- http://pawel/szpital#66050737417_201112021122_LEFT_MLO -->
-
-    <owl:NamedIndividual rdf:about="&szpital;_201112021122_LEFT_MLO">
-        <rdf:type rdf:resource="http://pawel/szpital#Individual_images"/>
-        <filename>66050737417_201112021122_LEFT_MLO.gif</filename>
-        <im_view>LEFT_MLO</im_view>
-        <has_group rdf:resource="&szpital;_201112021122"/>
-    </owl:NamedIndividual>
-    
-
-
-    <!-- http://pawel/szpital#Aleksandra_Majkut -->
-
-    <owl:NamedIndividual rdf:about="http://pawel/szpital#Aleksandra_Majkut">
-        <rdf:type rdf:resource="http://pawel/szpital#Patients"/>
-        <PESEL>67100145734</PESEL>
-        <name>Aleksandra Majkut</name>
-    </owl:NamedIndividual>
-    
-
-
-    <!-- http://pawel/szpital#Alicja_Zabawna -->
-
-    <owl:NamedIndividual rdf:about="http://pawel/szpital#Alicja_Zabawna">
-        <rdf:type rdf:resource="http://pawel/szpital#Patients"/>
-        <PESEL>76052265345</PESEL>
-        <name>Alicja Zabawna</name>
-    </owl:NamedIndividual>
-    
-
-
-    <!-- http://pawel/szpital#Jan_Kowalski -->
-
-    <owl:NamedIndividual rdf:about="http://pawel/szpital#Jan_Kowalski">
-        <rdf:type rdf:resource="http://pawel/szpital#Doctors"/>
-        <name>Jan Kowalski</name>
-        <PESEL>76072369946</PESEL>
-        <has_Patient rdf:resource="http://pawel/szpital#Alicja_Zabawna"/>
-    </owl:NamedIndividual>
-    
-
-
-    <!-- http://pawel/szpital#Janina_Grzyb -->
-
-    <owl:NamedIndividual rdf:about="http://pawel/szpital#Janina_Grzyb">
-        <rdf:type rdf:resource="http://pawel/szpital#Patients"/>
-        <PESEL>39090148656</PESEL>
-        <name>Janina Grzyb</name>
-    </owl:NamedIndividual>
-    
-
-
-    <!-- http://pawel/szpital#John_Laborant -->
-
-    <owl:NamedIndividual rdf:about="http://pawel/szpital#John_Laborant">
-        <rdf:type rdf:resource="http://pawel/szpital#Laboratory_assistants"/>
-        <name>John Laborant</name>
-        <PESEL>56060337595</PESEL>
-    </owl:NamedIndividual>
-    
-
-
-    <!-- http://pawel/szpital#Krystyna_Zgazowni -->
-
-    <owl:NamedIndividual rdf:about="http://pawel/szpital#Krystyna_Zgazowni">
-        <rdf:type rdf:resource="http://pawel/szpital#Patients"/>
-        <PESEL>77111134563</PESEL>
-        <name>Krystyna Zgazowni</name>
-        <State>rak</State>
-        <has_Doctor rdf:resource="http://pawel/szpital#Jan_Kowalski"/>
-    </owl:NamedIndividual>
-    
-
-
-    <!-- http://pawel/szpital#Smith_Laborant -->
-
-    <owl:NamedIndividual rdf:about="http://pawel/szpital#Smith_Laborant">
-        <rdf:type rdf:resource="http://pawel/szpital#Laboratory_assistants"/>
-        <PESEL>47070438522</PESEL>
-        <name>Smith Laborant</name>
-    </owl:NamedIndividual>
-    
-
-
-    <!-- http://pawel/szpital#Stefan_Nowak -->
-
-    <owl:NamedIndividual rdf:about="http://pawel/szpital#Stefan_Nowak">
-        <rdf:type rdf:resource="http://pawel/szpital#Doctors"/>
-        <PESEL>47122258295</PESEL>
-        <name>Stefan Nowak</name>
-    </owl:NamedIndividual>
-    
-
-
-    <!-- http://pawel/szpital#Zdzisława_Kowalska -->
-
-    <owl:NamedIndividual rdf:about="http://pawel/szpital#Zdzisława_Kowalska">
-        <rdf:type rdf:resource="http://pawel/szpital#Patients"/>
-        <name>Zdzisława Kowalska</name>
-        <PESEL>57101548565</PESEL>
-    </owl:NamedIndividual>
-    
-
-
-    <!-- http://pawel/szpital#Zenon_Iksiński -->
-
-    <owl:NamedIndividual rdf:about="http://pawel/szpital#Zenon_Iksiński">
-        <rdf:type rdf:resource="http://pawel/szpital#Doctors"/>
-        <PESEL>45050823764</PESEL>
-        <name>Zenon Iksiński</name>
-    </owl:NamedIndividual>
-    
-
-
-    <!-- http://pawel/szpital#Zofia_Krzywonos -->
-
-    <owl:NamedIndividual rdf:about="http://pawel/szpital#Zofia_Krzywonos">
-        <rdf:type rdf:resource="http://pawel/szpital#Patients"/>
-        <PESEL>66050737417</PESEL>
-        <State>zdrowy</State>
-        <name>Zofia Krzywonos</name>
-        <has_Doctor rdf:resource="http://pawel/szpital#Jan_Kowalski"/>
-        <has_Doctor rdf:resource="http://pawel/szpital#Stefan_Nowak"/>
-    </owl:NamedIndividual>
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns="http://pawel/szpital#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" > 
+  <rdf:Description rdf:about="http://pawel/szpital#title">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://pawel/szpital#Zofia_Krzywonos">
+    <has_Doctor rdf:resource="http://pawel/szpital#Stefan_Nowak"/>
+    <has_Doctor rdf:resource="http://pawel/szpital#Jan_Kowalski"/>
+    <name>Zofia Krzywonos</name>
+    <State>zdrowy</State>
+    <PESEL>66050737417</PESEL>
+    <rdf:type rdf:resource="http://pawel/szpital#Patients"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://pawel/szpital#People">
+    <owl:hasKey rdf:nodeID="A0"/>
+    <rdfs:subClassOf rdf:nodeID="A1"/>
+    <rdfs:subClassOf rdf:nodeID="A2"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://pawel/szpital#Individual_images">
+    <rdfs:subClassOf rdf:resource="http://pawel/szpital#Mammography_images"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://pawel/szpital#doctor_has_data">
+    <rdfs:domain rdf:resource="http://pawel/szpital#Doctors"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A2">
+    <owl:onDataRange rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <owl:qualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:qualifiedCardinality>
+    <owl:onProperty rdf:resource="http://pawel/szpital#name"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://pawel/szpital#im_view">
+    <rdfs:subPropertyOf rdf:resource="http://pawel/szpital#mammo_image_properties"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://pawel/szpital#has_Patient">
+    <owl:inverseOf rdf:resource="http://pawel/szpital#has_Doctor"/>
+    <rdfs:subPropertyOf rdf:resource="http://pawel/szpital#doctor_has_data"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://pawel/szpital#State">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:subPropertyOf rdf:resource="http://pawel/szpital#Patient_properties"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://pawel/szpital#John_Laborant">
+    <PESEL>56060337595</PESEL>
+    <name>John Laborant</name>
+    <rdf:type rdf:resource="http://pawel/szpital#Laboratory_assistants"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://pawel/szpital#creator">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A3">
+    <owl:someValuesFrom rdf:resource="http://pawel/szpital#Doctors"/>
+    <owl:onProperty rdf:resource="http://pawel/szpital#has_Doctor"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A4">
+    <owl:onDataRange rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <owl:qualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:qualifiedCardinality>
+    <owl:onProperty rdf:resource="http://pawel/szpital#State"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://pawel/szpital#has_mammo_image">
+    <rdfs:subPropertyOf rdf:resource="http://pawel/szpital#patient_has_data"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://pawel/szpital#66050737417_201112021122_LEFT_CC">
+    <has_group rdf:resource="http://pawel/szpital#66050737417_201112021122"/>
+    <im_view>LEFT_CC</im_view>
+    <filename>66050737417_201112021122_LEFT_CC.gif</filename>
+    <rdf:type rdf:resource="http://pawel/szpital#Individual_images"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://pawel/szpital#Patient_properties">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://pawel/szpital#of_Patient">
+    <rdfs:subPropertyOf rdf:resource="http://pawel/szpital#mammo_image_has_data"/>
+    <owl:inverseOf rdf:resource="http://pawel/szpital#has_mammo_image"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://pawel/szpital#has_group">
+    <rdfs:subPropertyOf rdf:resource="http://pawel/szpital#mammo_image_has_data"/>
+    <owl:inverseOf rdf:resource="http://pawel/szpital#has_images"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://pawel/szpital#Zdzisława_Kowalska">
+    <PESEL>57101548565</PESEL>
+    <name>Zdzisława Kowalska</name>
+    <rdf:type rdf:resource="http://pawel/szpital#Patients"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://pawel/szpital#Mammography_images">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://pawel/szpital#Workers">
+    <rdfs:subClassOf rdf:resource="http://pawel/szpital#People"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://pawel/szpital#Jan_Kowalski">
+    <has_Patient rdf:resource="http://pawel/szpital#Alicja_Zabawna"/>
+    <PESEL>76072369946</PESEL>
+    <name>Jan Kowalski</name>
+    <rdf:type rdf:resource="http://pawel/szpital#Doctors"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A5">
+    <owl:someValuesFrom rdf:resource="http://pawel/szpital#Patients"/>
+    <owl:onProperty rdf:resource="http://pawel/szpital#has_Patient"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://pawel/szpital#66050737417_201112021122">
+    <of_Patient rdf:resource="http://pawel/szpital#Zofia_Krzywonos"/>
+    <creat_date rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2011-12-02T11:22:00</creat_date>
+    <rdf:type rdf:resource="http://pawel/szpital#Mammography_images"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://pawel/szpital#has_Doctor">
+    <rdfs:subPropertyOf rdf:resource="http://pawel/szpital#patient_has_data"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://pawel/szpital#PESEL">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:subPropertyOf rdf:resource="http://pawel/szpital#Person_properties"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A1">
+    <owl:onDataRange rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <owl:qualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:qualifiedCardinality>
+    <owl:onProperty rdf:resource="http://pawel/szpital#PESEL"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://pawel/szpital#Person_properties">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://pawel/szpital#Doctors">
+    <rdfs:subClassOf rdf:nodeID="A5"/>
+    <rdfs:subClassOf rdf:resource="http://pawel/szpital#Workers"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://pawel/szpital#Stefan_Nowak">
+    <name>Stefan Nowak</name>
+    <PESEL>47122258295</PESEL>
+    <rdf:type rdf:resource="http://pawel/szpital#Doctors"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://pawel/szpital#Smith_Laborant">
+    <name>Smith Laborant</name>
+    <PESEL>47070438522</PESEL>
+    <rdf:type rdf:resource="http://pawel/szpital#Laboratory_assistants"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://pawel/szpital#Krystyna_Zgazowni">
+    <has_Doctor rdf:resource="http://pawel/szpital#Jan_Kowalski"/>
+    <State>rak</State>
+    <name>Krystyna Zgazowni</name>
+    <PESEL>77111134563</PESEL>
+    <rdf:type rdf:resource="http://pawel/szpital#Patients"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://pawel/szpital#66050737417_201112021122_LEFT_MLO">
+    <has_group rdf:resource="http://pawel/szpital#66050737417_201112021122"/>
+    <im_view>LEFT_MLO</im_view>
+    <filename>66050737417_201112021122_LEFT_MLO.gif</filename>
+    <rdf:type rdf:resource="http://pawel/szpital#Individual_images"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://pawel/szpital#mammo_image_properties">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://pawel/szpital#patient_has_data">
+    <rdfs:domain rdf:resource="http://pawel/szpital#Patients"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://pawel/szpital#has_images">
+    <rdfs:subPropertyOf rdf:resource="http://pawel/szpital#mammo_image_has_data"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://pawel/szpital#creat_date">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#dateTime"/>
+    <rdfs:subPropertyOf rdf:resource="http://pawel/szpital#mammo_image_properties"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://pawel/szpital">
+    <title xml:lang="pl">Szpital</title>
+    <creator xml:lang="pl">Paweł Śpiewak</creator>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Ontology"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://pawel/szpital#Zenon_Iksiński">
+    <name>Zenon Iksiński</name>
+    <PESEL>45050823764</PESEL>
+    <rdf:type rdf:resource="http://pawel/szpital#Doctors"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://pawel/szpital#Aleksandra_Majkut">
+    <name>Aleksandra Majkut</name>
+    <PESEL>67100145734</PESEL>
+    <rdf:type rdf:resource="http://pawel/szpital#Patients"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://pawel/szpital#Patients">
+    <rdfs:subClassOf rdf:nodeID="A3"/>
+    <rdfs:subClassOf rdf:nodeID="A4"/>
+    <rdfs:subClassOf rdf:resource="http://pawel/szpital#People"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://pawel/szpital#Alicja_Zabawna">
+    <name>Alicja Zabawna</name>
+    <PESEL>76052265345</PESEL>
+    <rdf:type rdf:resource="http://pawel/szpital#Patients"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://pawel/szpital#filename">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:subPropertyOf rdf:resource="http://pawel/szpital#mammo_image_properties"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://pawel/szpital#Laboratory_assistants">
+    <rdfs:subClassOf rdf:resource="http://pawel/szpital#Workers"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://pawel/szpital#Janina_Grzyb">
+    <name>Janina Grzyb</name>
+    <PESEL>39090148656</PESEL>
+    <rdf:type rdf:resource="http://pawel/szpital#Patients"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://pawel/szpital#mammo_image_has_data">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://pawel/szpital#name">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:subPropertyOf rdf:resource="http://pawel/szpital#Person_properties"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A0">
+    <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+    <rdf:first rdf:resource="http://pawel/szpital#PESEL"/>
+  </rdf:Description>
 </rdf:RDF>
-
-
-
-<!-- Generated by the OWL API (version 3.2.3.1824) http://owlapi.sourceforge.net -->
-

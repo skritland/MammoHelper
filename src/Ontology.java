@@ -149,8 +149,7 @@ class Ontology {
 			p.PESEL = qs.getLiteral("z").getString();
 			p.URI = qs.getResource("x").getURI();
 			Individual wor = OModel.getIndividual(p.URI);
-			if (wor.getOntClass().getURI() == OModel.getOntClass(
-					Szns + "Doctors").getURI()) {
+			if (wor.hasOntClass(OModel.getOntClass(Szns + "Doctors"))) {
 				p.isDoctor = true;
 			} else
 				p.isDoctor = false;
@@ -175,8 +174,7 @@ class Ontology {
 		patient.addProperty(OModel.getProperty(Szns + "name"), pac.nazwa);
 		patient.addProperty(OModel.getProperty(Szns + "PESEL"), pac.PESEL);
 		Individual wor = OModel.getIndividual(workerByName.URI);
-		if (wor.getOntClass().getURI() == OModel.getOntClass(Szns + "Doctors")
-				.getURI()) {
+		if (wor.hasOntClass(OModel.getOntClass(Szns + "Doctors"))) {
 			patient.addProperty(OModel.getProperty(Szns + "has_Doctor"),
 					OModel.getIndividual(workerByName.URI));
 		}
@@ -232,7 +230,7 @@ class Ontology {
 				zdj.URI = qs.getResource("zdj").getURI();
 				zdj.nazwapliku = qs.getLiteral("fnam").getString();
 				zdj.widok = qs.getLiteral("view").getString();
-				
+
 				zdje.zdjecia.add(zdj);
 			}
 			qe.close();
@@ -240,6 +238,12 @@ class Ontology {
 
 		return lizdje;
 
+	}
+
+	public void removePatient(Pacjent pac) {
+		Individual pacjent = OModel.getIndividual(pac.URI);
+		pacjent.remove();
+		save();
 	}
 
 }
