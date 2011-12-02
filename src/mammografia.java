@@ -21,6 +21,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.Group;
 
 /**
  * @author skritland
@@ -37,8 +38,9 @@ public class mammografia {
 	private Table table;
 	private Text text_1;
 	TabFolder tabFolder;
-	private java.util.List<Zdjecia> WyswZdjecia; // wyświetlane zdjęcia pacjenta
-
+	private Zdjecia WyswZdjecia; // wyświetlane zdjęcia pacjenta
+	private ZdjPodglad podgladZdjec;
+	Button btnPodglad;
 	public Combo admins;
 	private Table lista_zdjec;
 
@@ -91,7 +93,15 @@ public class mammografia {
 		browsePatients.setControl(compPacjenci);
 		tabFolder.setSelection(2);
 
-		table = new Table(compPacjenci, SWT.BORDER | SWT.FULL_SELECTION);
+		// *******************************pacjenci*****************************
+
+		Group grpPacjenci = new Group(compPacjenci, SWT.NONE);
+		grpPacjenci.setText("Pacjenci");
+		grpPacjenci.setBounds(10, 0, 340, 440);
+
+		table = new Table(grpPacjenci, SWT.BORDER | SWT.FULL_SELECTION);
+		table.setLocation(5, 20);
+		table.setSize(340, 312);
 		table.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -101,7 +111,6 @@ public class mammografia {
 
 			}
 		});
-		table.setBounds(10, 10, 340, 312);
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 
@@ -120,12 +129,11 @@ public class mammografia {
 		tcOstZdj.setWidth(100);
 		tcOstZdj.setText("Ostatnie zdj\u0119cie");
 
-		fillPatientsTable();
-
 		// przycisk dodaj pacjenta z bazy*************************
-		Button dodipac = new Button(compPacjenci, SWT.NONE);
+		Button dodipac = new Button(grpPacjenci, SWT.NONE);
+		dodipac.setLocation(10, 340);
+		dodipac.setSize(130, 30);
 		dodipac.setText("Dodaj pacjenta z bazy");
-		dodipac.setBounds(15, 340, 130, 30);
 		dodipac.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				DodIstPac okno = new DodIstPac(shell);
@@ -133,10 +141,12 @@ public class mammografia {
 				fillPatientsTable();
 			}
 		});
+
 		// przycisk dodaj pacjenta do bazy************************
-		Button dodnpac = new Button(compPacjenci, SWT.NONE);
+		Button dodnpac = new Button(grpPacjenci, SWT.NONE);
+		dodnpac.setLocation(200, 340);
+		dodnpac.setSize(130, 30);
 		dodnpac.setText("Dodaj nowego pacjenta");
-		dodnpac.setBounds(215, 340, 130, 30);
 		dodnpac.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				new DodNowPac(shell, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL,
@@ -145,11 +155,54 @@ public class mammografia {
 			}
 		});
 
-		Composite zdjecia = new Composite(compPacjenci, SWT.NONE);
-		zdjecia.setBounds(363, 10, 194, 424);
+		Button btnUsuPacjenta = new Button(grpPacjenci, SWT.NONE);
+		btnUsuPacjenta.setLocation(200, 390);
+		btnUsuPacjenta.setSize(130, 30);
+		btnUsuPacjenta.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				Pacjent pac = Onto.getPatientByPESEL(table.getSelection()[0]
+						.getText(1));
+				Onto.removePatient(pac);
+				fillPatientsTable();
+				fillImagesTable(null);
+			}
+		});
+		btnUsuPacjenta.setText("Usuń pacjenta");
+
+		Button btnZrezygnujZPacjenta = new Button(grpPacjenci, SWT.NONE);
+		btnZrezygnujZPacjenta.setLocation(10, 390);
+		btnZrezygnujZPacjenta.setSize(130, 30);
+		btnZrezygnujZPacjenta.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				Pacjent pac = Onto.getPatientByPESEL(table.getSelection()[0]
+						.getText(1));
+				Onto.removeDoctorFromPatient(WUser, pac);
+				fillPatientsTable();
+				fillImagesTable(null);
+
+			}
+		});
+		btnZrezygnujZPacjenta.setText("Zrezygnuj z pacjenta");
+
+		fillPatientsTable();
+
+		// *********************zdjęcia********************************
+		Group zdjecia = new Group(compPacjenci, SWT.NONE);
+		zdjecia.setText("Zdjęcia");
+		zdjecia.setBounds(360, 0, 200, 440);
 
 		lista_zdjec = new Table(zdjecia, SWT.BORDER | SWT.FULL_SELECTION);
-		lista_zdjec.setBounds(0, 0, 190, 312);
+		lista_zdjec.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				WyswZdjecia = (Zdjecia) lista_zdjec.getSelection()[0].getData();
+				podgladZdjec = new ZdjPodglad(WyswZdjecia.zdjecia);
+				btnPodglad.setImage(podgladZdjec.getImage());
+			}
+		});
+		lista_zdjec.setBounds(5, 20, 190, 350);
 		lista_zdjec.setHeaderVisible(true);
 		lista_zdjec.setLinesVisible(true);
 
@@ -163,48 +216,41 @@ public class mammografia {
 		tblclmnOcena.setText("Ocena");
 
 		Button btnDodajZdjcie_1 = new Button(zdjecia, SWT.NONE);
-		btnDodajZdjcie_1.setBounds(10, 334, 76, 23);
+		btnDodajZdjcie_1.setBounds(10, 390, 76, 23);
 		btnDodajZdjcie_1.setText("Dodaj zdjęcie");
 
 		Button btnUsuZdjcie = new Button(zdjecia, SWT.NONE);
-		btnUsuZdjcie.setBounds(116, 334, 68, 23);
+		btnUsuZdjcie.setBounds(116, 390, 76, 23);
 		btnUsuZdjcie.setText("Usuń zdjęcie");
+		// ********************************************podgląd*************************************************************
+		Group grpPodgld = new Group(compPacjenci, SWT.NONE);
+		grpPodgld.setText("Podgląd");
+		grpPodgld.setBounds(570, 0, 200, 440);
 
-		Button btnUsuPacjenta = new Button(compPacjenci, SWT.NONE);
-		btnUsuPacjenta.addSelectionListener(new SelectionAdapter() {
-			@Override
+		btnPodglad = new Button(grpPodgld, SWT.FLAT);
+		btnPodglad.setBounds(10, 47, 180, 180);
+		btnPodglad.setText("New Button");
+
+		Button btnPrev = new Button(grpPodgld, SWT.ARROW | SWT.LEFT);
+		btnPrev.setBounds(10, 233, 40, 23);
+		btnPrev.setText("Previous");
+		btnPrev.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				Pacjent pac = Onto.getPatientByPESEL(table.getSelection()[0]
-						.getText(1));
-				Onto.removePatient(pac);
-				fillPatientsTable();
-				fillImagesTable(null);
+				podgladZdjec.previous();
+				btnPodglad.setImage(podgladZdjec.getImage());
 			}
 		});
-		btnUsuPacjenta.setBounds(215, 388, 130, 30);
-		btnUsuPacjenta.setText("Usuń pacjenta");
 
-		Button btnZrezygnujZPacjenta = new Button(compPacjenci, SWT.NONE);
-		btnZrezygnujZPacjenta.addSelectionListener(new SelectionAdapter() {
-			@Override
+		Button btnNext = new Button(grpPodgld, SWT.ARROW | SWT.RIGHT);
+		btnNext.setBounds(149, 233, 40, 23);
+		btnNext.setText("Next");
+		btnNext.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				Pacjent pac = Onto.getPatientByPESEL(table.getSelection()[0]
-						.getText(1));
-				Onto.removeDoctorFromPatient(WUser, pac);
-				fillPatientsTable();
-				fillImagesTable(null);
-
+				podgladZdjec.next();
+				btnPodglad.setImage(podgladZdjec.getImage());
 			}
 		});
-		btnZrezygnujZPacjenta.setBounds(15, 388, 130, 30);
-		btnZrezygnujZPacjenta.setText("Zrezygnuj z pacjenta");
-		dodnpac.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				new DodNowPac(shell, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL,
-						Onto, User).open();
-				fillPatientsTable();
-			}
-		});
+
 	}
 
 	/**
@@ -231,6 +277,9 @@ public class mammografia {
 			}
 		});
 		sh.pack();
+		sh.setLocation(
+				display.getBounds().width / 2 - sh.getBounds().width / 2,
+				display.getBounds().height / 3 - sh.getBounds().height / 2);
 		sh.open();
 		while (!sh.isDisposed()) {
 			if (!display.readAndDispatch()) {
@@ -432,7 +481,6 @@ public class mammografia {
 	}
 
 	private void fillImagesTable(java.util.List<Zdjecia> zdjecia) {
-		WyswZdjecia = zdjecia;
 		lista_zdjec.removeAll();
 		if (zdjecia == null)
 			return;
@@ -445,6 +493,7 @@ public class mammografia {
 
 			tableItem.setText(new String[] { sdf.format(zdje.dataBadania),
 					(zdje.ocena == null) ? "Brak diagnozy" : zdje.ocena, });
+			tableItem.setData(zdje);
 		}
 
 	}
