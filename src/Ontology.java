@@ -2,8 +2,11 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntClass;
@@ -145,6 +148,12 @@ class Ontology {
 			p.nazwa = worname;
 			p.PESEL = qs.getLiteral("z").getString();
 			p.URI = qs.getResource("x").getURI();
+			Individual wor = OModel.getIndividual(p.URI);
+			if (wor.getOntClass().getURI() == OModel.getOntClass(
+					Szns + "Doctors").getURI()) {
+				p.isDoctor = true;
+			} else
+				p.isDoctor = false;
 			// p.stan = qs.getLiteral("s").getString();
 		}
 		qe.close();
@@ -172,6 +181,64 @@ class Ontology {
 					OModel.getIndividual(workerByName.URI));
 		}
 		save();
+
+	}
+
+	List<Zdjecia> getImagesOfPatient(Pacjent pac) {
+		String querys = "PREFIX foaf: <http://pawel/szpital#>\r\n"
+				+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
+				+ "SELECT ?x ?y WHERE { \r\n"
+				+ "		?x rdf:type foaf:Mammography_images.\r\n"
+				+ "		?x foaf:of_Patient <" + pac.URI + "> .\r\n"
+				+ "		?x foaf:creat_date ?y .\r\n" + "	}";
+		Query query = QueryFactory.create(querys);
+		QueryExecution qe = QueryExecutionFactory.create(query, OModel);
+		com.hp.hpl.jena.query.ResultSet results = qe.execSelect();
+		List<Zdjecia> lizdje = new ArrayList<Zdjecia>();
+		Zdjecia zdje = null;
+		while (results.hasNext()) {
+			QuerySolution qs = results.next();
+			zdje = new Zdjecia();
+			zdje.pacjent = pac;
+			zdje.URI = qs.getResource("x").getURI();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+			try {
+				zdje.dataBadania = sdf.parse(qs.getLiteral("y").getString());
+			} catch (ParseException e) {
+
+				e.printStackTrace();
+			}
+			lizdje.add(zdje);
+		}
+		qe.close();
+		ListIterator<Zdjecia> iter = lizdje.listIterator();
+		while (iter.hasNext()) {
+			zdje = iter.next();
+			querys = "PREFIX foaf: <http://pawel/szpital#>\r\n"
+					+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
+					+ "SELECT ?zdj ?fnam ?view WHERE { \r\n"
+					+ "		?zdj rdf:type foaf:Individual_images .\r\n"
+					+ "		?zdj foaf:has_group <" + zdje.URI + "> .\r\n"
+					+ "		?zdj foaf:im_view ?view .\r\n"
+					+ "		?zdj foaf:filename ?fnam .\r\n" + "	}";
+			query = QueryFactory.create(querys);
+			qe = QueryExecutionFactory.create(query, OModel);
+			results = qe.execSelect();
+			zdje.zdjecia = new ArrayList<Zdjecie>();
+			Zdjecie zdj = null;
+			while (results.hasNext()) {
+				QuerySolution qs = results.next();
+				zdj = new Zdjecie();
+				zdj.URI = qs.getResource("zdj").getURI();
+				zdj.nazwapliku = qs.getLiteral("fnam").getString();
+				zdj.widok = qs.getLiteral("view").getString();
+				
+				zdje.zdjecia.add(zdj);
+			}
+			qe.close();
+		}
+
+		return lizdje;
 
 	}
 

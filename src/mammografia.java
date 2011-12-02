@@ -1,3 +1,5 @@
+import java.text.SimpleDateFormat;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -27,6 +29,7 @@ import org.eclipse.swt.widgets.Text;
 public class mammografia {
 
 	private String User;
+	private Worker WUser;
 	private Ontology Onto;
 	protected Shell shell;
 	private Label ClblUytkownika;
@@ -34,8 +37,10 @@ public class mammografia {
 	private Table table;
 	private Text text_1;
 	TabFolder tabFolder;
+	private java.util.List<Zdjecia> zdjeciaWyswZdjecia; //wyświetlane zdjęcia pacjenta
 
 	public Combo admins;
+	private Table lista_zdjec;
 
 	public mammografia() {
 		Onto = new Ontology();
@@ -63,6 +68,7 @@ public class mammografia {
 		createContents();
 		// initTasks();
 		selectUser();
+		WUser = Onto.getWorkerByName(User);
 		startInUserMode(); // uruchamia program dla odpowiedniego u¿ytkownika
 
 		if (User == null)
@@ -87,13 +93,22 @@ public class mammografia {
 		tabFolder.setSelection(2);
 
 		table = new Table(compPacjenci, SWT.BORDER | SWT.FULL_SELECTION);
+		table.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				Pacjent pac = Onto.getPatientByPESEL(table.getSelection()[0]
+						.getText(1));
+				fillImagesTable(Onto.getImagesOfPatient(pac));
+
+			}
+		});
 		table.setBounds(10, 10, 340, 312);
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 
 		TableColumn tcNazwa = new TableColumn(table, SWT.NONE);
 		tcNazwa.setWidth(100);
-		tcNazwa.setText("Imiê i nazwisko");
+		tcNazwa.setText("Imię i nazwisko");
 		TableColumn tcPESEL = new TableColumn(table, SWT.NONE);
 		tcPESEL.setWidth(78);
 		tcPESEL.setText("PESEL");
@@ -111,7 +126,7 @@ public class mammografia {
 		// przycisk dodaj pacjenta z bazy*************************
 		Button dodipac = new Button(compPacjenci, SWT.NONE);
 		dodipac.setText("Dodaj pacjenta z bazy");
-		dodipac.setBounds(15, 340, 130, 40);
+		dodipac.setBounds(15, 340, 130, 30);
 		dodipac.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				DodIstPac okno = new DodIstPac(shell);
@@ -122,17 +137,51 @@ public class mammografia {
 		// przycisk dodaj pacjenta do bazy************************
 		Button dodnpac = new Button(compPacjenci, SWT.NONE);
 		dodnpac.setText("Dodaj nowego pacjenta");
-		dodnpac.setBounds(150, 340, 130, 40);
+		dodnpac.setBounds(215, 340, 130, 30);
+
+		Composite zdjecia = new Composite(compPacjenci, SWT.NONE);
+		zdjecia.setBounds(363, 10, 194, 424);
+
+		lista_zdjec = new Table(zdjecia, SWT.BORDER | SWT.FULL_SELECTION);
+		lista_zdjec.setBounds(0, 0, 190, 312);
+		lista_zdjec.setHeaderVisible(true);
+		lista_zdjec.setLinesVisible(true);
+
+		TableColumn tblclmnDataWykonania = new TableColumn(lista_zdjec,
+				SWT.NONE);
+		tblclmnDataWykonania.setWidth(90);
+		tblclmnDataWykonania.setText("Data wykonania");
+
+		TableColumn tblclmnOcena = new TableColumn(lista_zdjec, SWT.NONE);
+		tblclmnOcena.setWidth(94);
+		tblclmnOcena.setText("Ocena");
+
+		Button btnDodajZdjcie_1 = new Button(zdjecia, SWT.NONE);
+		btnDodajZdjcie_1.setBounds(0, 334, 76, 23);
+		btnDodajZdjcie_1.setText("Dodaj zdjęcie");
+
+		Button btnUsuZdjcie = new Button(zdjecia, SWT.NONE);
+		btnUsuZdjcie.setBounds(136, 334, 68, 23);
+		btnUsuZdjcie.setText("Usuń zdjęcie");
+
+		Button btnUsuPacjenta = new Button(compPacjenci, SWT.NONE);
+		btnUsuPacjenta.setBounds(215, 388, 130, 30);
+		btnUsuPacjenta.setText("Usuń pacjenta");
+
+		Button btnZrezygnujZPacjenta = new Button(compPacjenci, SWT.NONE);
+		btnZrezygnujZPacjenta.setBounds(10, 388, 135, 30);
+		btnZrezygnujZPacjenta.setText("Zrezygnuj z pacjenta");
 		dodnpac.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				new DodNowPac(shell, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL, Onto, User).open();
+				new DodNowPac(shell, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL,
+						Onto, User).open();
 				fillPatientsTable();
 			}
 		});
 	}
 
 	/**
-	 * Wybiera u¿ytkownika programu
+	 * Wybiera użytkownika programu
 	 */
 	private void selectUser() {
 		Display display = Display.getDefault();
@@ -140,7 +189,7 @@ public class mammografia {
 		sh.setLayout(new FillLayout(SWT.VERTICAL));
 		Label lblUytkownika = new Label(sh, SWT.NONE);
 		lblUytkownika.setAlignment(SWT.CENTER);
-		lblUytkownika.setText("U¿ytkownik: ");
+		lblUytkownika.setText("Użytkownik: ");
 		admins = new Combo(sh, SWT.READ_ONLY);
 		new LoadPeople(admins).run();
 		admins.select(0);
@@ -333,7 +382,11 @@ public class mammografia {
 
 	private void fillPatientsTable() {
 		table.removeAll();
-		java.util.List<Pacjent> pacli = Onto.getPatients(User, true);
+		java.util.List<Pacjent> pacli;
+		if (WUser.isDoctor == true)
+			pacli = Onto.getPatients(User, true);
+		else
+			pacli = Onto.getPatients(null, true);
 		java.util.ListIterator<Pacjent> iter = pacli.listIterator();
 
 		while (iter.hasNext()) {
@@ -343,11 +396,26 @@ public class mammografia {
 					.setText(new String[] {
 							pac.nazwa,
 							pac.PESEL,
-							(pac.stan == null) ? "Nieznany" : "pac.stan",
+							(pac.stan == null) ? "Nieznany" : pac.stan,
 							(pac.ostatbad == null) ? "Nigdy" : pac.ostatbad
 									.toString() });
 		}
 
+	}
+
+	private void fillImagesTable(java.util.List<Zdjecia> zdjecia) {
+		WyswZdjecia = zdjecia;
+		lista_zdjec.removeAll();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		java.util.ListIterator<Zdjecia> iter = zdjecia.listIterator();
+
+		while (iter.hasNext()) {
+			Zdjecia zdje = iter.next();
+			TableItem tableItem = new TableItem(lista_zdjec, SWT.NONE);
+
+			tableItem.setText(new String[] { sdf.format(zdje.dataBadania),
+					(zdje.ocena == null) ? "Nie diagnozowano" : zdje.ocena, });
+		}
 
 	}
 }
