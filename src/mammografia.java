@@ -109,6 +109,7 @@ public class mammografia {
 						.getText(1));
 				fillImagesTable(Onto.getImagesOfPatient(pac));
 				setImagesPreview(null);
+				WyswBadanie = null;
 
 			}
 		});
@@ -135,7 +136,8 @@ public class mammografia {
 		dodipac.setLocation(10, 340);
 		dodipac.setSize(130, 30);
 		dodipac.setText("Dodaj pacjenta z bazy");
-		if (!WUser.isDoctor) dodipac.setEnabled(false);
+		if (!WUser.isDoctor)
+			dodipac.setEnabled(false);
 		dodipac.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				DodIstPac okno = new DodIstPac(shell);
@@ -175,7 +177,8 @@ public class mammografia {
 		Button btnZrezygnujZPacjenta = new Button(grpPacjenci, SWT.NONE);
 		btnZrezygnujZPacjenta.setLocation(10, 390);
 		btnZrezygnujZPacjenta.setSize(130, 30);
-		if (!WUser.isDoctor) btnZrezygnujZPacjenta.setEnabled(false);
+		if (!WUser.isDoctor)
+			btnZrezygnujZPacjenta.setEnabled(false);
 		btnZrezygnujZPacjenta.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -191,7 +194,7 @@ public class mammografia {
 
 		fillPatientsTable();
 
-		// *********************zdjęcia********************************
+		// *********************badania********************************
 		Group badania = new Group(compPacjenci, SWT.NONE);
 		badania.setText("Badania");
 		badania.setBounds(360, 0, 200, 440);
@@ -201,8 +204,7 @@ public class mammografia {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				WyswBadanie = (Badania) lista_badan.getSelection()[0].getData();
-				podgladZdjec = new ZdjPodglad(WyswBadanie.zdjecia);
-				setImagesPreview(podgladZdjec);
+				setImagesPreview(new ZdjPodglad(WyswBadanie.zdjecia));
 			}
 		});
 		lista_badan.setBounds(5, 20, 190, 350);
@@ -233,6 +235,14 @@ public class mammografia {
 		btnUsuZdjcie.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				if (WyswBadanie == null)
+					return;
+				Onto.removeExamination(WyswBadanie);
+				WyswBadanie = null;
+				Pacjent pac = Onto.getPatientByPESEL(table.getSelection()[0]
+						.getText(1));
+				fillImagesTable(Onto.getImagesOfPatient(pac));
+				setImagesPreview(null);
 			}
 		});
 		// ********************************************podgląd*************************************************************
@@ -250,6 +260,8 @@ public class mammografia {
 		btnPrev.setText("Previous");
 		btnPrev.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
+				if (podgladZdjec == null)
+					return;
 				podgladZdjec.previous();
 				setImagesPreview(podgladZdjec);
 			}
@@ -260,6 +272,8 @@ public class mammografia {
 		btnNext.setText("Next");
 		btnNext.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
+				if (podgladZdjec == null)
+					return;
 				podgladZdjec.next();
 				setImagesPreview(podgladZdjec);
 			}
@@ -394,14 +408,14 @@ public class mammografia {
 
 				ImageData ideaImage = new ImageData(path);
 				Image im = new Image(Display.getDefault(), ideaImage);
-				
+
 				int width = im.getBounds().width;
 				int height = im.getBounds().height;
 
 				double ratio = (double) 266 / (double) width;
 				height = (int) (height * ratio);
 				width = 266;
-				
+
 				Image scaled = new Image(Display.getDefault(), im
 						.getImageData().scaledTo(width, height));
 
@@ -513,6 +527,7 @@ public class mammografia {
 	}
 
 	private void setImagesPreview(ZdjPodglad pz) {
+		podgladZdjec = pz;
 		if (pz == null) {
 			btnPodglad.setImage(null);
 		} else {

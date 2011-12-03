@@ -252,8 +252,25 @@ class Ontology {
 		save();	
 	}
 	
-	public void removeExamination(Badania zdje) {
-		Individual badanie = OModel.getIndividual(zdje.URI);
+	public void removeExamination(Badania bad) {
+		String querys = "PREFIX foaf: <http://pawel/szpital#>\r\n" + 
+				"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n" + 
+				"SELECT ?zdj WHERE { \r\n" + 
+				"		?zdj rdf:type foaf:Mammography_Images .\r\n" + 
+				"		?zdj foaf:has_group <" + bad.URI + "> .\r\n" + 
+				"	}";
+		Query query = QueryFactory.create(querys);
+		QueryExecution qe = QueryExecutionFactory.create(query, OModel);
+		com.hp.hpl.jena.query.ResultSet results = qe.execSelect();
+		ArrayList<Individual> al = new ArrayList<Individual>();
+		while (results.hasNext()) {
+			QuerySolution qs = results.next();
+			al.add(OModel.getIndividual(qs.getResource("zdj").getURI()));
+		}
+		qe.close();
+		for (Individual in : al)
+			in.remove();
+		Individual badanie = OModel.getIndividual(bad.URI);
 		badanie.remove();
 		save();
 	}
