@@ -239,14 +239,6 @@
     
 
 
-    <!-- http://pawel/szpital#Individual_images -->
-
-    <owl:Class rdf:about="http://pawel/szpital#Individual_images">
-        <rdfs:subClassOf rdf:resource="http://pawel/szpital#Mammography_images"/>
-    </owl:Class>
-    
-
-
     <!-- http://pawel/szpital#Laboratory_assistants -->
 
     <owl:Class rdf:about="http://pawel/szpital#Laboratory_assistants">
@@ -255,9 +247,17 @@
     
 
 
-    <!-- http://pawel/szpital#Mammography_images -->
+    <!-- http://pawel/szpital#Mammography_Examination -->
 
-    <owl:Class rdf:about="http://pawel/szpital#Mammography_images"/>
+    <owl:Class rdf:about="http://pawel/szpital#Mammography_Examination"/>
+    
+
+
+    <!-- http://pawel/szpital#Mammography_Images -->
+
+    <owl:Class rdf:about="http://pawel/szpital#Mammography_Images">
+        <rdfs:subClassOf rdf:resource="http://pawel/szpital#Mammography_Examination"/>
+    </owl:Class>
     
 
 
@@ -328,7 +328,7 @@
     <!-- http://pawel/szpital#66050737417_201112021122 -->
 
     <owl:NamedIndividual rdf:about="&szpital;_201112021122">
-        <rdf:type rdf:resource="http://pawel/szpital#Mammography_images"/>
+        <rdf:type rdf:resource="http://pawel/szpital#Mammography_Examination"/>
         <creat_date rdf:datatype="&xsd;dateTime">2011-12-02T11:22:00</creat_date>
         <of_Patient rdf:resource="http://pawel/szpital#Zofia_Krzywonos"/>
     </owl:NamedIndividual>
@@ -338,7 +338,7 @@
     <!-- http://pawel/szpital#66050737417_201112021122_LEFT_CC -->
 
     <owl:NamedIndividual rdf:about="&szpital;_201112021122_LEFT_CC">
-        <rdf:type rdf:resource="http://pawel/szpital#Individual_images"/>
+        <rdf:type rdf:resource="http://pawel/szpital#Mammography_Images"/>
         <filename>66050737417_201112021122_LEFT_CC.gif</filename>
         <im_view>LEFT_CC</im_view>
         <has_group rdf:resource="&szpital;_201112021122"/>
@@ -349,7 +349,7 @@
     <!-- http://pawel/szpital#66050737417_201112021122_LEFT_MLO -->
 
     <owl:NamedIndividual rdf:about="&szpital;_201112021122_LEFT_MLO">
-        <rdf:type rdf:resource="http://pawel/szpital#Individual_images"/>
+        <rdf:type rdf:resource="http://pawel/szpital#Mammography_Images"/>
         <filename>66050737417_201112021122_LEFT_MLO.gif</filename>
         <im_view>LEFT_MLO</im_view>
         <has_group rdf:resource="&szpital;_201112021122"/>
@@ -360,7 +360,7 @@
     <!-- http://pawel/szpital#66050737417_201112021122_RIGHT_CC -->
 
     <owl:NamedIndividual rdf:about="&szpital;_201112021122_RIGHT_CC">
-        <rdf:type rdf:resource="http://pawel/szpital#Individual_images"/>
+        <rdf:type rdf:resource="http://pawel/szpital#Mammography_Images"/>
         <im_view>RIGHT_CC</im_view>
         <filename>66050737417_201112021122_RIGHT_CC.gif</filename>
         <has_group rdf:resource="&szpital;_201112021122"/>
@@ -371,7 +371,7 @@
     <!-- http://pawel/szpital#66050737417_201112021122_RIGHT_MLO -->
 
     <owl:NamedIndividual rdf:about="&szpital;_201112021122_RIGHT_MLO">
-        <rdf:type rdf:resource="http://pawel/szpital#Individual_images"/>
+        <rdf:type rdf:resource="http://pawel/szpital#Mammography_Images"/>
         <filename>66050737417_201112021122_RIGHT_MLO.gif</filename>
         <im_view>RIGHT_MLO</im_view>
         <has_group rdf:resource="&szpital;_201112021122"/>

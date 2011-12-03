@@ -182,21 +182,21 @@ class Ontology {
 
 	}
 
-	List<Zdjecia> getImagesOfPatient(Pacjent pac) {
+	List<Badania> getImagesOfPatient(Pacjent pac) {
 		String querys = "PREFIX foaf: <http://pawel/szpital#>\r\n"
 				+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
 				+ "SELECT ?x ?y WHERE { \r\n"
-				+ "		?x rdf:type foaf:Mammography_images.\r\n"
+				+ "		?x rdf:type foaf:Mammography_Examination.\r\n"
 				+ "		?x foaf:of_Patient <" + pac.URI + "> .\r\n"
 				+ "		?x foaf:creat_date ?y .\r\n" + "	}";
 		Query query = QueryFactory.create(querys);
 		QueryExecution qe = QueryExecutionFactory.create(query, OModel);
 		com.hp.hpl.jena.query.ResultSet results = qe.execSelect();
-		List<Zdjecia> lizdje = new ArrayList<Zdjecia>();
-		Zdjecia zdje = null;
+		List<Badania> lizdje = new ArrayList<Badania>();
+		Badania zdje = null;
 		while (results.hasNext()) {
 			QuerySolution qs = results.next();
-			zdje = new Zdjecia();
+			zdje = new Badania();
 			zdje.pacjent = pac;
 			zdje.URI = qs.getResource("x").getURI();
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
@@ -209,13 +209,13 @@ class Ontology {
 			lizdje.add(zdje);
 		}
 		qe.close();
-		ListIterator<Zdjecia> iter = lizdje.listIterator();
+		ListIterator<Badania> iter = lizdje.listIterator();
 		while (iter.hasNext()) {
 			zdje = iter.next();
 			querys = "PREFIX foaf: <http://pawel/szpital#>\r\n"
 					+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
 					+ "SELECT ?zdj ?fnam ?view WHERE { \r\n"
-					+ "		?zdj rdf:type foaf:Individual_images .\r\n"
+					+ "		?zdj rdf:type foaf:Mammography_Images .\r\n"
 					+ "		?zdj foaf:has_group <" + zdje.URI + "> .\r\n"
 					+ "		?zdj foaf:im_view ?view .\r\n"
 					+ "		?zdj foaf:filename ?fnam .\r\n" + "	}";
@@ -249,8 +249,13 @@ class Ontology {
 	public void removeDoctorFromPatient(Worker wUser, Pacjent pac) {
 		Individual pacjent = OModel.getIndividual(pac.URI);
 		pacjent.removeProperty(OModel.getProperty(Szns + "has_Doctor"), OModel.getIndividual(wUser.URI));
+		save();	
+	}
+	
+	public void removeExamination(Badania zdje) {
+		Individual badanie = OModel.getIndividual(zdje.URI);
+		badanie.remove();
 		save();
-		
 	}
 
 }

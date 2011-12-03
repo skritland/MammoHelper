@@ -38,11 +38,11 @@ public class mammografia {
 	private Table table;
 	private Text text_1;
 	TabFolder tabFolder;
-	private Zdjecia WyswZdjecia; // wyświetlane zdjęcia pacjenta
+	private Badania WyswBadanie; // wyświetlane zdjęcia pacjenta
 	private ZdjPodglad podgladZdjec;
 	Button btnPodglad;
 	public Combo admins;
-	private Table lista_zdjec;
+	private Table lista_badan;
 
 	public mammografia() {
 		Onto = new Ontology();
@@ -135,6 +135,7 @@ public class mammografia {
 		dodipac.setLocation(10, 340);
 		dodipac.setSize(130, 30);
 		dodipac.setText("Dodaj pacjenta z bazy");
+		if (!WUser.isDoctor) dodipac.setEnabled(false);
 		dodipac.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				DodIstPac okno = new DodIstPac(shell);
@@ -174,6 +175,7 @@ public class mammografia {
 		Button btnZrezygnujZPacjenta = new Button(grpPacjenci, SWT.NONE);
 		btnZrezygnujZPacjenta.setLocation(10, 390);
 		btnZrezygnujZPacjenta.setSize(130, 30);
+		if (!WUser.isDoctor) btnZrezygnujZPacjenta.setEnabled(false);
 		btnZrezygnujZPacjenta.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -190,39 +192,49 @@ public class mammografia {
 		fillPatientsTable();
 
 		// *********************zdjęcia********************************
-		Group zdjecia = new Group(compPacjenci, SWT.NONE);
-		zdjecia.setText("Zdjęcia");
-		zdjecia.setBounds(360, 0, 200, 440);
+		Group badania = new Group(compPacjenci, SWT.NONE);
+		badania.setText("Badania");
+		badania.setBounds(360, 0, 200, 440);
 
-		lista_zdjec = new Table(zdjecia, SWT.BORDER | SWT.FULL_SELECTION);
-		lista_zdjec.addSelectionListener(new SelectionAdapter() {
+		lista_badan = new Table(badania, SWT.BORDER | SWT.FULL_SELECTION);
+		lista_badan.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				WyswZdjecia = (Zdjecia) lista_zdjec.getSelection()[0].getData();
-				podgladZdjec = new ZdjPodglad(WyswZdjecia.zdjecia);
+				WyswBadanie = (Badania) lista_badan.getSelection()[0].getData();
+				podgladZdjec = new ZdjPodglad(WyswBadanie.zdjecia);
 				setImagesPreview(podgladZdjec);
 			}
 		});
-		lista_zdjec.setBounds(5, 20, 190, 350);
-		lista_zdjec.setHeaderVisible(true);
-		lista_zdjec.setLinesVisible(true);
+		lista_badan.setBounds(5, 20, 190, 350);
+		lista_badan.setHeaderVisible(true);
+		lista_badan.setLinesVisible(true);
 
-		TableColumn tblclmnDataWykonania = new TableColumn(lista_zdjec,
+		TableColumn tblclmnDataWykonania = new TableColumn(lista_badan,
 				SWT.NONE);
 		tblclmnDataWykonania.setWidth(90);
 		tblclmnDataWykonania.setText("Data wykonania");
 
-		TableColumn tblclmnOcena = new TableColumn(lista_zdjec, SWT.NONE);
+		TableColumn tblclmnOcena = new TableColumn(lista_badan, SWT.NONE);
 		tblclmnOcena.setWidth(94);
 		tblclmnOcena.setText("Ocena");
 
-		Button btnDodajZdjcie_1 = new Button(zdjecia, SWT.NONE);
+		Button btnDodajZdjcie_1 = new Button(badania, SWT.NONE);
 		btnDodajZdjcie_1.setBounds(10, 390, 76, 23);
-		btnDodajZdjcie_1.setText("Dodaj zdjęcie");
+		btnDodajZdjcie_1.setText("Dodaj badanie");
+		btnDodajZdjcie_1.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+			}
+		});
 
-		Button btnUsuZdjcie = new Button(zdjecia, SWT.NONE);
+		Button btnUsuZdjcie = new Button(badania, SWT.NONE);
 		btnUsuZdjcie.setBounds(116, 390, 76, 23);
-		btnUsuZdjcie.setText("Usuń zdjęcie");
+		btnUsuZdjcie.setText("Usuń badanie");
+		btnUsuZdjcie.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+			}
+		});
 		// ********************************************podgląd*************************************************************
 		Group grpPodgld = new Group(compPacjenci, SWT.NONE);
 		grpPodgld.setText("Podgląd");
@@ -482,16 +494,16 @@ public class mammografia {
 
 	}
 
-	private void fillImagesTable(java.util.List<Zdjecia> zdjecia) {
-		lista_zdjec.removeAll();
+	private void fillImagesTable(java.util.List<Badania> zdjecia) {
+		lista_badan.removeAll();
 		if (zdjecia == null)
 			return;
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		java.util.ListIterator<Zdjecia> iter = zdjecia.listIterator();
+		java.util.ListIterator<Badania> iter = zdjecia.listIterator();
 
 		while (iter.hasNext()) {
-			Zdjecia zdje = iter.next();
-			TableItem tableItem = new TableItem(lista_zdjec, SWT.NONE);
+			Badania zdje = iter.next();
+			TableItem tableItem = new TableItem(lista_badan, SWT.NONE);
 
 			tableItem.setText(new String[] { sdf.format(zdje.dataBadania),
 					(zdje.ocena == null) ? "Brak diagnozy" : zdje.ocena, });

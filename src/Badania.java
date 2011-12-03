@@ -1,7 +1,7 @@
 import java.util.Date;
 import java.util.List;
 
-class Zdjecia {
+class Badania {
 	public String URI;
 	public Pacjent pacjent;
 	public Date dataBadania;
