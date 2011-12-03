@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.OntModel;
@@ -17,6 +18,7 @@ import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.QuerySolution;
+import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 
 class Ontology {
@@ -66,18 +68,20 @@ class Ontology {
 		if (doctor != null) {
 			if (doktora == true)
 				querys = "PREFIX foaf: <http://pawel/szpital#>\r\n"
-						+ "SELECT ?y ?z\r\n" + "WHERE { \r\n"
+						+ "SELECT ?y ?z ?stan\r\n" + "WHERE { \r\n"
 						+ "		?lek foaf:name  \"" + doctor + "\" .\r\n"
 						+ "		?x foaf:has_Doctor ?lek .\r\n"
 						+ "		?x foaf:name ?y .\r\n"
-						+ "		?x foaf:PESEL ?z .\r\n" + "}";
+						+ "		?x foaf:PESEL ?z .\r\n"
+						+ "		OPTIONAL { ?x foaf:State ?stan . } \r\n" + "}";
 			else
 				querys = "PREFIX foaf: <http://pawel/szpital#>\r\n"
 						+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
-						+ "SELECT ?y ?z WHERE { \r\n"
+						+ "SELECT ?y ?z ?stan WHERE { \r\n"
 						+ "		?x rdf:type foaf:Patients.\r\n"
 						+ "		?x foaf:name ?y .\r\n"
-						+ "		?x foaf:PESEL ?z .\r\n" + "		OPTIONAL {\r\n"
+						+ "		?x foaf:PESEL ?z .\r\n"
+						+ "		OPTIONAL { ?x foaf:State ?stan . } \r\n" + "		OPTIONAL {\r\n"
 						+ "		?x foaf:has_Doctor ?lek .\r\n"
 						+ "		?lek  foaf:name ?imie .\r\n" + "		}\r\n"
 						+ "		FILTER (!bound(?imie) || ?imie != \"" + doctor
@@ -85,10 +89,10 @@ class Ontology {
 		} else
 			querys = "PREFIX foaf: <http://pawel/szpital#>\r\n"
 					+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
-					+ "SELECT ?y ?z\r\n" + "WHERE { \r\n"
+					+ "SELECT ?y ?z ?stan\r\n" + "WHERE { \r\n"
 					+ "		?x rdf:type foaf:Patients .\r\n"
 					+ "		?x foaf:name ?y .\r\n" + "		?x foaf:PESEL ?z .\r\n"
-					+ "}";
+					+ "		OPTIONAL { ?x foaf:State ?stan . } \r\n" + "}";
 		Query query = QueryFactory.create(querys);
 		QueryExecution qe = QueryExecutionFactory.create(query, OModel);
 		com.hp.hpl.jena.query.ResultSet results = qe.execSelect();
@@ -97,6 +101,8 @@ class Ontology {
 			Pacjent p = new Pacjent();
 			p.nazwa = qs.getLiteral("y").getString();
 			p.PESEL = qs.getLiteral("z").getString();
+			Literal tmp = qs.getLiteral("stan");
+			p.stan = (tmp == null)?(null):(tmp.getString());
 			pacjenci.add(p);
 			// p.stan = qs.getLiteral("s").getString();
 		}
@@ -182,6 +188,33 @@ class Ontology {
 
 	}
 
+	public void addNewExamination(Badania bad) {
+		OntClass badania = OModel.getOntClass(Szns + "Mammography_Examination");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmm");
+		String nazwa = bad.pacjent.PESEL + "_" + sdf.format(bad.dataBadania);
+		Individual badanie = OModel.createIndividual(Szns + nazwa, badania);
+		badanie.addProperty(OModel.getProperty(Szns + "of_Patient"),
+				OModel.getIndividual(bad.pacjent.URI));
+		SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+		badanie.addProperty(OModel.getProperty(Szns + "creat_date"),
+				sdf2.format(bad.dataBadania), XSDDatatype.XSDdateTime);
+		ListIterator<Zdjecie> li = bad.zdjecia.listIterator();
+		while (li.hasNext()) {
+			Zdjecie zdj = li.next();
+			OntClass zdjecia = OModel.getOntClass(Szns + "Mammography_Images");
+			nazwa = bad.pacjent.PESEL + "_" + sdf.format(bad.dataBadania) + "_"
+					+ zdj.widok;
+			Individual zdjecie = OModel.createIndividual(Szns + nazwa, zdjecia);
+			zdjecie.addProperty(OModel.getProperty(Szns + "has_group"), badanie);
+			zdjecie.addProperty(OModel.getProperty(Szns + "im_view"), zdj.widok);
+			zdjecie.addProperty(OModel.getProperty(Szns + "filename"),
+					zdj.nazwapliku);
+		}
+
+		save();
+
+	}
+
 	List<Badania> getImagesOfPatient(Pacjent pac) {
 		String querys = "PREFIX foaf: <http://pawel/szpital#>\r\n"
 				+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
@@ -248,17 +281,17 @@ class Ontology {
 
 	public void removeDoctorFromPatient(Worker wUser, Pacjent pac) {
 		Individual pacjent = OModel.getIndividual(pac.URI);
-		pacjent.removeProperty(OModel.getProperty(Szns + "has_Doctor"), OModel.getIndividual(wUser.URI));
-		save();	
+		pacjent.removeProperty(OModel.getProperty(Szns + "has_Doctor"),
+				OModel.getIndividual(wUser.URI));
+		save();
 	}
-	
+
 	public void removeExamination(Badania bad) {
-		String querys = "PREFIX foaf: <http://pawel/szpital#>\r\n" + 
-				"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n" + 
-				"SELECT ?zdj WHERE { \r\n" + 
-				"		?zdj rdf:type foaf:Mammography_Images .\r\n" + 
-				"		?zdj foaf:has_group <" + bad.URI + "> .\r\n" + 
-				"	}";
+		String querys = "PREFIX foaf: <http://pawel/szpital#>\r\n"
+				+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
+				+ "SELECT ?zdj WHERE { \r\n"
+				+ "		?zdj rdf:type foaf:Mammography_Images .\r\n"
+				+ "		?zdj foaf:has_group <" + bad.URI + "> .\r\n" + "	}";
 		Query query = QueryFactory.create(querys);
 		QueryExecution qe = QueryExecutionFactory.create(query, OModel);
 		com.hp.hpl.jena.query.ResultSet results = qe.execSelect();

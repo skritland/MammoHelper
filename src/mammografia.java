@@ -29,6 +29,8 @@ import org.eclipse.swt.widgets.Group;
  */
 public class mammografia {
 
+	final static String lokalizacja = "./imdb/"; // folder z plikami
+
 	private String User;
 	private Worker WUser;
 	private Ontology Onto;
@@ -43,6 +45,7 @@ public class mammografia {
 	Button btnPodglad;
 	public Combo admins;
 	private Table lista_badan;
+	private Pacjent wyswPacjent;
 
 	public mammografia() {
 		Onto = new Ontology();
@@ -70,10 +73,12 @@ public class mammografia {
 		createContents();
 		// initTasks();
 		selectUser();
+		if (User == null) {
+			shell.dispose();
+			return;
+		}
 		startInUserMode(); // uruchamia program dla odpowiedniego u¿ytkownika
 
-		if (User == null)
-			shell.dispose();
 		shell.open();
 		shell.layout();
 
@@ -107,7 +112,8 @@ public class mammografia {
 			public void widgetSelected(SelectionEvent e) {
 				Pacjent pac = Onto.getPatientByPESEL(table.getSelection()[0]
 						.getText(1));
-				fillImagesTable(Onto.getImagesOfPatient(pac));
+				wyswPacjent = pac;
+				fillImagesTable(Onto.getImagesOfPatient(wyswPacjent));
 				setImagesPreview(null);
 				WyswBadanie = null;
 
@@ -143,6 +149,7 @@ public class mammografia {
 				DodIstPac okno = new DodIstPac(shell);
 				okno.open(Onto, User);
 				fillPatientsTable();
+				wyswPacjent = null;
 			}
 		});
 
@@ -156,6 +163,7 @@ public class mammografia {
 				new DodNowPac(shell, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL,
 						Onto, User).open();
 				fillPatientsTable();
+				wyswPacjent = null;
 			}
 		});
 
@@ -168,6 +176,7 @@ public class mammografia {
 				Pacjent pac = Onto.getPatientByPESEL(table.getSelection()[0]
 						.getText(1));
 				Onto.removePatient(pac);
+				wyswPacjent = null;
 				fillPatientsTable();
 				fillImagesTable(null);
 			}
@@ -187,6 +196,7 @@ public class mammografia {
 				Onto.removeDoctorFromPatient(WUser, pac);
 				fillPatientsTable();
 				fillImagesTable(null);
+				wyswPacjent = null;
 
 			}
 		});
@@ -226,6 +236,19 @@ public class mammografia {
 		btnDodajZdjcie_1.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				if (wyswPacjent == null)
+					return;
+				DodNowBad okno = new DodNowBad(shell, SWT.DIALOG_TRIM
+						| SWT.PRIMARY_MODAL);
+				Badania bad = okno.open(wyswPacjent);
+				if (bad == null)
+					return;
+				Onto.addNewExamination(bad);
+				WyswBadanie = bad;
+				Pacjent pac = Onto.getPatientByPESEL(table.getSelection()[0]
+						.getText(1));
+				fillImagesTable(Onto.getImagesOfPatient(pac));
+				setImagesPreview(new ZdjPodglad(WyswBadanie.zdjecia));
 			}
 		});
 
@@ -315,6 +338,8 @@ public class mammografia {
 			}
 
 		}
+		if (User == null)
+			return;
 		ClblUytkownika.setText("Pracuje: " + User + " "
 				+ ((WUser.isDoctor) ? ("(LEKARZ)") : ("(LABORANT)")));
 		ClblUytkownika.pack();

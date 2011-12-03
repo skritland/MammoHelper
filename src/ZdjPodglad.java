@@ -8,7 +8,6 @@ class ZdjPodglad {
 	private List<Zdjecie> zdjecia;
 	private int ile;
 	private int ktore;
-	private final String lokalizacja = "./imdb/"; // folder z plikami
 
 	public ZdjPodglad(List<Zdjecie> zdjeciaa) {
 		zdjecia = zdjeciaa;
@@ -17,7 +16,7 @@ class ZdjPodglad {
 	}
 
 	public Image getImage() {
-		ImageData imd = new ImageData(lokalizacja
+		ImageData imd = new ImageData(mammografia.lokalizacja
 				+ zdjecia.get(ktore).nazwapliku);
 		return new Image(Display.getDefault(), imd);
 	}
