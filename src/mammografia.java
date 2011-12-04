@@ -1,5 +1,4 @@
 import java.text.SimpleDateFormat;
-import java.util.List;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -105,7 +104,7 @@ public class mammografia {
 				Pacjent pac = Onto.getPatientByPESEL(table.getSelection()[0]
 						.getText(1));
 				wyswPacjent = pac;
-				fillImagesTable(Onto.getImagesOfPatient(wyswPacjent));
+				fillImagesTable(Onto.getExaminationsOfPatient(wyswPacjent));
 				setImagesPreview(null);
 				WyswBadanie = null;
 
@@ -239,7 +238,7 @@ public class mammografia {
 				WyswBadanie = bad;
 				Pacjent pac = Onto.getPatientByPESEL(table.getSelection()[0]
 						.getText(1));
-				fillImagesTable(Onto.getImagesOfPatient(pac));
+				fillImagesTable(Onto.getExaminationsOfPatient(pac));
 				setImagesPreview(new ZdjPodglad(WyswBadanie.zdjecia));
 			}
 		});
@@ -256,7 +255,7 @@ public class mammografia {
 				WyswBadanie = null;
 				Pacjent pac = Onto.getPatientByPESEL(table.getSelection()[0]
 						.getText(1));
-				fillImagesTable(Onto.getImagesOfPatient(pac));
+				fillImagesTable(Onto.getExaminationsOfPatient(pac));
 				setImagesPreview(null);
 			}
 		});
@@ -275,7 +274,9 @@ public class mammografia {
 				DescribePhotos okno = new DescribePhotos(shell, SWT.DIALOG_TRIM
 						| SWT.PRIMARY_MODAL, Onto);
 				
-				okno.open(WyswBadanie);
+				WyswBadanie = okno.open(WyswBadanie);
+				Onto.updateExamination(WyswBadanie);
+				
 			}
 		});
 		btnPodglad.setBounds(10, 47, 180, 180);

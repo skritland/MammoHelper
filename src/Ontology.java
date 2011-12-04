@@ -233,7 +233,7 @@ class Ontology {
 
 	}
 
-	List<Badanie> getImagesOfPatient(Pacjent pac) {
+	List<Badanie> getExaminationsOfPatient(Pacjent pac) {
 		String querys = "PREFIX foaf: <http://pawel/szpital#>\r\n"
 				+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
 				+ "SELECT ?x ?y WHERE { \r\n"
@@ -356,7 +356,7 @@ class Ontology {
 					gal2.dzieci = null;
 					gal2.URI = pom2.getURI();
 					gal2.nazwa = pom2.getLocalName().replace('_', ' ');
-					//System.out.println(gal2.nazwa);
+					// System.out.println(gal2.nazwa);
 					gal2.wybrane = false;
 					gal2.wybraneDziecko = false;
 					gal.dzieci.add(gal2);
@@ -399,7 +399,7 @@ class Ontology {
 					gal2.dzieci = null;
 					gal2.URI = pom2.getURI();
 					gal2.nazwa = pom2.getLocalName().replace('_', ' ');
-					//System.out.println(gal2.nazwa);
+					// System.out.println(gal2.nazwa);
 					gal2.wybrane = false;
 					gal2.wybraneDziecko = false;
 					gal.dzieci.add(gal2);
@@ -410,6 +410,27 @@ class Ontology {
 		}
 		Collections.sort(root.dzieci);
 		return root;
-	}	
-	
+	}
+
+	public void updateExamination(Badanie badanie) {
+		Individual examination = OModel.getIndividual(badanie.URI);
+		examination.removeAll(OModel.getProperty(Szns + "ocena"));
+		examination.removeAll(OModel.getProperty(Szns + "has_mammo_finding"));
+		examination
+				.removeAll(OModel.getProperty(Szns + "has_mammo_assessment"));
+		examination.addProperty(OModel.getProperty(Szns + "ocena"),
+				badanie.ocena);
+		for (Choroby cho : badanie.choroby)
+			examination.addProperty(
+					OModel.getProperty(Szns + "has_mammo_assessment"), cho.URI);
+		for (Zauwazone zauw : badanie.zauwazone)
+			examination.addProperty(
+					OModel.getProperty(Szns + "has_mammo_finding"), zauw.URI);
+		Individual patient = OModel.getIndividual(badanie.pacjent.URI);
+		patient.removeAll(OModel.getProperty(Szns + "State"));
+		patient.addProperty(OModel.getProperty(Szns + "State"),
+				badanie.pacjent.stan);
+		save();
+
+	}
 }
