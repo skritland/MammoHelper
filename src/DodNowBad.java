@@ -20,7 +20,7 @@ import org.eclipse.swt.events.SelectionEvent;
 
 public class DodNowBad extends Dialog {
 
-	protected Badania result;
+	protected Badanie result;
 	DateTime date;
 	DateTime time;
 	protected Shell shlD;
@@ -44,7 +44,7 @@ public class DodNowBad extends Dialog {
 	 * Open the dialog.
 	 * @return the result
 	 */
-	public Badania open(Pacjent pac) {
+	public Badanie open(Pacjent pac) {
 		pacjent = pac;
 		createContents();
 		shlD.open();
@@ -80,7 +80,7 @@ public class DodNowBad extends Dialog {
 					mb.open();
 					return;
 				}
-				result = new Badania();
+				result = new Badanie();
 				result.dataBadania = new Date(date.getYear()-1900, date.getMonth(), date.getDay(), time.getHours(), time.getMinutes());
 				result.pacjent = pacjent;
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmm");

@@ -206,7 +206,7 @@ class Ontology {
 
 	}
 
-	public void addNewExamination(Badania bad) {
+	public void addNewExamination(Badanie bad) {
 		OntClass badania = OModel.getOntClass(Szns + "Mammography_Examination");
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmm");
 		String nazwa = bad.pacjent.PESEL + "_" + sdf.format(bad.dataBadania);
@@ -233,7 +233,7 @@ class Ontology {
 
 	}
 
-	List<Badania> getImagesOfPatient(Pacjent pac) {
+	List<Badanie> getImagesOfPatient(Pacjent pac) {
 		String querys = "PREFIX foaf: <http://pawel/szpital#>\r\n"
 				+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
 				+ "SELECT ?x ?y WHERE { \r\n"
@@ -243,11 +243,11 @@ class Ontology {
 		Query query = QueryFactory.create(querys);
 		QueryExecution qe = QueryExecutionFactory.create(query, OModel);
 		com.hp.hpl.jena.query.ResultSet results = qe.execSelect();
-		List<Badania> lizdje = new ArrayList<Badania>();
-		Badania zdje = null;
+		List<Badanie> lizdje = new ArrayList<Badanie>();
+		Badanie zdje = null;
 		while (results.hasNext()) {
 			QuerySolution qs = results.next();
-			zdje = new Badania();
+			zdje = new Badanie();
 			zdje.pacjent = pac;
 			zdje.URI = qs.getResource("x").getURI();
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
@@ -260,7 +260,7 @@ class Ontology {
 			lizdje.add(zdje);
 		}
 		qe.close();
-		ListIterator<Badania> iter = lizdje.listIterator();
+		ListIterator<Badanie> iter = lizdje.listIterator();
 		while (iter.hasNext()) {
 			zdje = iter.next();
 			querys = "PREFIX foaf: <http://pawel/szpital#>\r\n"
@@ -304,7 +304,7 @@ class Ontology {
 		save();
 	}
 
-	public void removeExamination(Badania bad) {
+	public void removeExamination(Badanie bad) {
 		String querys = "PREFIX foaf: <http://pawel/szpital#>\r\n"
 				+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
 				+ "SELECT ?zdj WHERE { \r\n"

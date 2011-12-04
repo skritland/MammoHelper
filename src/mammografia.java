@@ -1,4 +1,5 @@
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -12,7 +13,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
@@ -31,8 +31,7 @@ public class mammografia {
 	protected Shell shell;
 	private Label ClblUytkownika;
 	private Table table;
-	TabFolder tabFolder;
-	private Badania WyswBadanie; // wyświetlane zdjęcia pacjenta
+	private Badanie WyswBadanie; // wyświetlane zdjęcia pacjenta
 	private ZdjPodglad podgladZdjec;
 	Button btnPodglad;
 	public Combo admins;
@@ -206,7 +205,7 @@ public class mammografia {
 		lista_badan.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				WyswBadanie = (Badania) lista_badan.getSelection()[0].getData();
+				WyswBadanie = (Badanie) lista_badan.getSelection()[0].getData();
 				setImagesPreview(new ZdjPodglad(WyswBadanie.zdjecia));
 			}
 		});
@@ -233,7 +232,7 @@ public class mammografia {
 					return;
 				DodNowBad okno = new DodNowBad(shell, SWT.DIALOG_TRIM
 						| SWT.PRIMARY_MODAL);
-				Badania bad = okno.open(wyswPacjent);
+				Badanie bad = okno.open(wyswPacjent);
 				if (bad == null)
 					return;
 				Onto.addNewExamination(bad);
@@ -276,7 +275,13 @@ public class mammografia {
 				DescribePhotos okno = new DescribePhotos(shell, SWT.DIALOG_TRIM
 						| SWT.PRIMARY_MODAL);
 				
-				okno.open(wyswPacjent, WyswBadanie);
+				okno.open(WyswBadanie);
+				// TODO 
+			   	OntoDrzewko ro = Onto.getFindingsList();
+			   	SelectFinding sd = new SelectFinding(shell, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL, ro, null);
+			   	List<Zauwazone> lch = sd.open();
+			   	sd = new SelectFinding(shell, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL, ro, lch);
+			   	sd.open();
 			}
 		});
 		btnPodglad.setBounds(10, 47, 180, 180);
@@ -394,15 +399,15 @@ public class mammografia {
 
 	}
 
-	private void fillImagesTable(java.util.List<Badania> zdjecia) {
+	private void fillImagesTable(java.util.List<Badanie> zdjecia) {
 		lista_badan.removeAll();
 		if (zdjecia == null)
 			return;
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		java.util.ListIterator<Badania> iter = zdjecia.listIterator();
+		java.util.ListIterator<Badanie> iter = zdjecia.listIterator();
 
 		while (iter.hasNext()) {
-			Badania zdje = iter.next();
+			Badanie zdje = iter.next();
 			TableItem tableItem = new TableItem(lista_badan, SWT.NONE);
 
 			tableItem.setText(new String[] { sdf.format(zdje.dataBadania),

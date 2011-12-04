@@ -14,12 +14,11 @@ import org.eclipse.swt.widgets.Combo;
 
 public class DescribePhotos extends Dialog {
 
-	protected Object result;
 	protected Shell shell;
 	
 
 	private Pacjent pacjent;
-	private Badania badanie;
+	private Badanie badanie;
 	private ZdjPodglad podglad;
 	private Label view;
 	private Label lblZdjcie;
@@ -40,8 +39,8 @@ public class DescribePhotos extends Dialog {
 	 * @param wyswBadanie 
 	 * @return the result
 	 */
-	public Object open(Pacjent wyswPacjent, Badania wyswBadanie) {
-		pacjent = wyswPacjent;
+	public Badanie open(Badanie wyswBadanie) {
+		pacjent = wyswBadanie.pacjent;
 		badanie = wyswBadanie;
 		
 		podglad = new ZdjPodglad(badanie.zdjecia);
@@ -55,7 +54,7 @@ public class DescribePhotos extends Dialog {
 				display.sleep();
 			}
 		}
-		return result;
+		return badanie;
 	}
 
 	private void refresh() {
@@ -69,7 +68,7 @@ public class DescribePhotos extends Dialog {
 	 */
 	private void createContents() {
 		shell = new Shell(getParent(), getStyle());
-		shell.setSize(534, 441);
+		shell.setSize(863, 443);
 		shell.setText("Pacjent: " + pacjent.nazwa + " / Badanie: " + badanie.dataBadania );
 		shell.setLayout(null);
 		
@@ -113,42 +112,74 @@ public class DescribePhotos extends Dialog {
 		lblZdjcie.setBounds(49, 380, 170, 27);
 		lblZdjcie.setText("Zdj\u0119cie #1");
 		
-		Label lblNewLabel = new Label(shell, SWT.NONE);
-		lblNewLabel.setBounds(264, 10, 59, 14);
-		lblNewLabel.setText("Choroby:");
+		Label lblChoroby = new Label(shell, SWT.NONE);
+		lblChoroby.setBounds(264, 10, 59, 14);
+		lblChoroby.setText("Choroby:");
 		
 		List chList = new List(shell, SWT.BORDER);
-		chList.setBounds(264, 30, 260, 151);
+		chList.setBounds(264, 30, 260, 210);
 		
-		Button chUsun = new Button(shell, SWT.NONE);
-		chUsun.setBounds(450, 187, 74, 28);
-		chUsun.setText("Usu\u0144");
-		
-		Button chDodaj = new Button(shell, SWT.NONE);
-		chDodaj.setText("Dodaj");
-		chDodaj.setBounds(375, 187, 74, 28);
+		Button btEdytujChoroby = new Button(shell, SWT.NONE);
+		btEdytujChoroby.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+			}
+		});
+		btEdytujChoroby.setText("Edytuj");
+		btEdytujChoroby.setBounds(450, 246, 74, 28);
 		
 		List komList = new List(shell, SWT.BORDER);
-		komList.setBounds(264, 241, 260, 94);
+		komList.setBounds(538, 30, 260, 210);
 		
-		Button komDodaj = new Button(shell, SWT.NONE);
-		komDodaj.setText("Dodaj");
-		komDodaj.setBounds(375, 341, 74, 28);
+		Button btnEdytujZauw = new Button(shell, SWT.NONE);
+		btnEdytujZauw.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+			}
+		});
+		btnEdytujZauw.setText("Edytuj");
+		btnEdytujZauw.setBounds(724, 246, 74, 28);
 		
-		Label lblKomentarze = new Label(shell, SWT.NONE);
-		lblKomentarze.setText("Komentarze:");
-		lblKomentarze.setBounds(264, 221, 98, 14);
+		Label lblZauw = new Label(shell, SWT.NONE);
+		lblZauw.setText("Zauwa\u017Cone istotne cechy");
+		lblZauw.setBounds(538, 10, 129, 14);
 		
-		Button komUsun = new Button(shell, SWT.NONE);
-		komUsun.setText("Usu\u0144");
-		komUsun.setBounds(450, 341, 74, 28);
+		Label lblStanPacjenta = new Label(shell, SWT.NONE);
+		lblStanPacjenta.setText("Stan pacjenta:");
+		lblStanPacjenta.setBounds(264, 367, 98, 14);
 		
-		Label lblStandPacjenta = new Label(shell, SWT.NONE);
-		lblStandPacjenta.setText("Stan pacjenta:");
-		lblStandPacjenta.setBounds(264, 367, 98, 14);
+		Combo cmbStanPacjenta = new Combo(shell, SWT.NONE);
+		cmbStanPacjenta.setBounds(264, 387, 260, 21);
 		
-		Combo combo = new Combo(shell, SWT.NONE);
-		combo.setBounds(264, 387, 260, 22);
+		Label lblOcenaZdjecia = new Label(shell, SWT.NONE);
+		lblOcenaZdjecia.setBounds(264, 317, 74, 13);
+		lblOcenaZdjecia.setText("Ocena zdj\u0119cia:");
+		
+		Combo cmbOcenaZdjecia = new Combo(shell, SWT.NONE);
+		cmbOcenaZdjecia.setBounds(264, 336, 260, 21);
+		
+		Label lblDataBadania = new Label(shell, SWT.NONE);
+		lblDataBadania.setBounds(538, 336, 70, 13);
+		lblDataBadania.setText("Data badania:");
+		
+		Button btnOk = new Button(shell, SWT.NONE);
+		btnOk.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+			}
+		});
+		btnOk.setBounds(624, 387, 68, 23);
+		btnOk.setText("OK");
+		
+		Button btnAnuluj = new Button(shell, SWT.NONE);
+		btnAnuluj.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				shell.dispose();
+			}
+		});
+		btnAnuluj.setBounds(730, 386, 68, 23);
+		btnAnuluj.setText("Anuluj");
 
 	}
 }
