@@ -46,4 +46,8 @@ class ZdjPodglad {
 	public int num(){
 		return ktore;
 	}
+	
+	public int ile(){
+		return ile;
+	}
 }

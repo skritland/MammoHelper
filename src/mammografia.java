@@ -273,15 +273,9 @@ public class mammografia {
 					return;
 				
 				DescribePhotos okno = new DescribePhotos(shell, SWT.DIALOG_TRIM
-						| SWT.PRIMARY_MODAL);
+						| SWT.PRIMARY_MODAL, Onto);
 				
 				okno.open(WyswBadanie);
-				// TODO 
-			   	OntoDrzewko ro = Onto.getFindingsList();
-			   	SelectFinding sd = new SelectFinding(shell, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL, ro, null);
-			   	List<Zauwazone> lch = sd.open();
-			   	sd = new SelectFinding(shell, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL, ro, lch);
-			   	sd.open();
 			}
 		});
 		btnPodglad.setBounds(10, 47, 180, 180);
