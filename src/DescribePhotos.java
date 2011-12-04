@@ -30,6 +30,7 @@ public class DescribePhotos extends Dialog {
 	private Label view;
 	private Label lblZdjcie;
 	List liChoroby;
+	List liZauw;
 	Combo cmbStanPacjenta;
 	Combo cmbOcenaZdjecia;
 	private Ontology onto;
@@ -87,9 +88,9 @@ public class DescribePhotos extends Dialog {
 	}
 
 	private void refreshZauw() {
-		liChoroby.removeAll();
+		liZauw.removeAll();
 		for (Zauwazone zau : badanie.zauwazone)
-			liChoroby.add(zau.nazwa);
+			liZauw.add(zau.nazwa);
 	}
 
 	/**
@@ -108,9 +109,6 @@ public class DescribePhotos extends Dialog {
 		view.setBounds(10, 10, 224, 335);
 		view.setText("View");
 		view.setAlignment(SWT.CENTER);
-
-		Point size = view.getSize();
-		view.setImage(podglad.getImage(size.x, size.y));
 
 		Button btnNewButton = new Button(shell, SWT.ARROW | SWT.RIGHT);
 		btnNewButton.setBounds(225, 381, 33, 28);
@@ -161,7 +159,7 @@ public class DescribePhotos extends Dialog {
 		btEdytujChoroby.setText("Edytuj");
 		btEdytujChoroby.setBounds(450, 246, 74, 28);
 
-		List liZauw = new List(shell, SWT.BORDER);
+		liZauw = new List(shell, SWT.BORDER);
 		liZauw.setBounds(538, 30, 260, 210);
 
 		Button btnEdytujZauw = new Button(shell, SWT.NONE);
@@ -230,6 +228,10 @@ public class DescribePhotos extends Dialog {
 		});
 		btnAnuluj.setBounds(730, 386, 68, 23);
 		btnAnuluj.setText("Anuluj");
+		
+		refreshChoroby();
+		refreshZauw();
+		refresh();
 
 	}
 }

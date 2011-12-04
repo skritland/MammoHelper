@@ -21,6 +21,8 @@ import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.Statement;
+import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 class Ontology {
@@ -137,9 +139,10 @@ class Ontology {
 	Pacjent getPatientByPESEL(String PESEL) {
 		String querys = "PREFIX foaf: <http://pawel/szpital#>\r\n"
 				+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
-				+ "SELECT ?x ?y\r\n" + "WHERE { \r\n"
+				+ "SELECT ?x ?y ?s\r\n" + "WHERE { \r\n"
 				+ "		?x rdf:type foaf:Patients .\r\n" + "		?x foaf:name ?y ."
-				+ "		?x foaf:PESEL \"" + PESEL + "\" .\r\n" + "}";
+				+ "		?x foaf:PESEL \"" + PESEL + "\" .\r\n"
+				+ "		OPTIONAL { ?x foaf:State ?s . }\r\n" + "}";
 		Query query = QueryFactory.create(querys);
 		QueryExecution qe = QueryExecutionFactory.create(query, OModel);
 		com.hp.hpl.jena.query.ResultSet results = qe.execSelect();
@@ -150,7 +153,8 @@ class Ontology {
 			p.nazwa = qs.getLiteral("y").getString();
 			p.PESEL = PESEL;
 			p.URI = qs.getResource("x").getURI();
-			// p.stan = qs.getLiteral("s").getString();
+			Literal lit = qs.getLiteral("s");
+			p.stan = (lit == null) ? null : lit.getString();
 		}
 		qe.close();
 		return p;
@@ -236,10 +240,11 @@ class Ontology {
 	List<Badanie> getExaminationsOfPatient(Pacjent pac) {
 		String querys = "PREFIX foaf: <http://pawel/szpital#>\r\n"
 				+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
-				+ "SELECT ?x ?y WHERE { \r\n"
+				+ "SELECT ?x ?y ?o WHERE { \r\n"
 				+ "		?x rdf:type foaf:Mammography_Examination.\r\n"
 				+ "		?x foaf:of_Patient <" + pac.URI + "> .\r\n"
-				+ "		?x foaf:creat_date ?y .\r\n" + "	}";
+				+ "		?x foaf:creat_date ?y .\r\n"
+				+ "		OPTIONAL { ?x foaf:ocena ?o . } \r\n" + "	}";
 		Query query = QueryFactory.create(querys);
 		QueryExecution qe = QueryExecutionFactory.create(query, OModel);
 		com.hp.hpl.jena.query.ResultSet results = qe.execSelect();
@@ -250,7 +255,32 @@ class Ontology {
 			zdje = new Badanie();
 			zdje.pacjent = pac;
 			zdje.URI = qs.getResource("x").getURI();
+			Literal lit = qs.getLiteral("o");
+			zdje.ocena = (lit == null) ? null : lit.getString();
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+			Individual examination = OModel.getIndividual(zdje.URI);
+			StmtIterator si = examination.listProperties(OModel.getProperty(Szns + "has_mammo_assessment"));
+			if (si.hasNext()) zdje.choroby = new ArrayList<Choroby>();
+			Statement stmt;
+			Choroby cho;
+			while (si.hasNext()) {
+				stmt = si.next();
+				cho = new Choroby();
+				cho.URI = stmt.getResource().getURI();
+				cho.nazwa = stmt.getResource().getLocalName().replace('_', ' ');
+				zdje.choroby.add(cho);
+			}
+			si = examination.listProperties(OModel.getProperty(Szns + "has_mammo_finding"));
+			if (si.hasNext()) zdje.zauwazone = new ArrayList<Zauwazone>();
+			Zauwazone zau;
+			while (si.hasNext()) {
+				stmt = si.next();
+				zau = new Zauwazone();
+				zau.URI = stmt.getResource().getURI();
+				zau.nazwa = stmt.getResource().getLocalName().replace('_', ' ');
+				zdje.zauwazone.add(zau);
+			}
+			
 			try {
 				zdje.dataBadania = sdf.parse(qs.getLiteral("y").getString());
 			} catch (ParseException e) {
@@ -420,12 +450,16 @@ class Ontology {
 				.removeAll(OModel.getProperty(Szns + "has_mammo_assessment"));
 		examination.addProperty(OModel.getProperty(Szns + "ocena"),
 				badanie.ocena);
-		for (Choroby cho : badanie.choroby)
-			examination.addProperty(
-					OModel.getProperty(Szns + "has_mammo_assessment"), cho.URI);
-		for (Zauwazone zauw : badanie.zauwazone)
-			examination.addProperty(
-					OModel.getProperty(Szns + "has_mammo_finding"), zauw.URI);
+		if (badanie.choroby != null)
+			for (Choroby cho : badanie.choroby)
+				examination.addProperty(
+						OModel.getProperty(Szns + "has_mammo_assessment"),
+						OModel2.getIndividual(cho.URI));
+		if (badanie.zauwazone != null)
+			for (Zauwazone zauw : badanie.zauwazone)
+				examination.addProperty(
+						OModel.getProperty(Szns + "has_mammo_finding"),
+						OModel2.getIndividual(zauw.URI));
 		Individual patient = OModel.getIndividual(badanie.pacjent.URI);
 		patient.removeAll(OModel.getProperty(Szns + "State"));
 		patient.addProperty(OModel.getProperty(Szns + "State"),
