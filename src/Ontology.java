@@ -23,18 +23,33 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 
 class Ontology {
 	private final String SzpitalFile = "owl/szpital2.owl";
-	// private final String MammoFile = "owl/mammo.owl";
+	private final String MammoFile = "owl/mammo.owl";
 	private final String Szns = "http://pawel/szpital#";
-	OntModel OModel;
+	//private final String MammoNS = "http://www.chime.ucl.ac.uk/ontologies/mammo#";
+	OntModel OModel, OModel2;
 	FileOutputStream FOS;
 
 	Ontology() { // wczytywanie ontologii z pliku
 		OModel = ModelFactory.createOntologyModel(
 				OntModelSpec.OWL_MEM_MINI_RULE_INF, null);
+		OModel2 = ModelFactory.createOntologyModel(
+				OntModelSpec.OWL_MEM, null);
+		//OModel.getDocumentManager().addAltEntry("http://www.chime.ucl.ac.uk/ontologies/mammo", MammoFile);
 		try {
 			FileInputStream szpitalowl = new FileInputStream(SzpitalFile);
 			OModel.read(szpitalowl, null);
 			szpitalowl.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			FileInputStream mammoowl = new FileInputStream(MammoFile);
+			OModel2.read(mammoowl, null);
+			mammoowl.close();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

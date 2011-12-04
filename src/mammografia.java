@@ -3,6 +3,7 @@ import java.text.SimpleDateFormat;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
@@ -81,6 +82,8 @@ public class mammografia {
 	}
 
 	private void startInUserMode() {
+		//SelectDiagnosis sd = new SelectDiagnosis(shell, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
+		
 		// tworzenie tabeli pacjentów ***************************************
 		Composite compPacjenci = new Composite(shell, SWT.NONE);
 		compPacjenci.setLocation(0, 40);
@@ -402,7 +405,8 @@ public class mammografia {
 		if (pz == null) {
 			btnPodglad.setImage(null);
 		} else {
-			btnPodglad.setImage(pz.getImage());
+			Point size = btnPodglad.getSize();
+			btnPodglad.setImage(pz.getImage(size.x, size.y));
 		}
 	}
 }
