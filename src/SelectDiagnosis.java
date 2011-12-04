@@ -44,18 +44,18 @@ public class SelectDiagnosis extends Dialog {
 	 */
 	private void createContents() {
 		shell = new Shell(getParent(), getStyle());
-		shell.setSize(454, 556);
+		shell.setSize(270, 485);
 		shell.setText(getText());
 		
 		Tree tree = new Tree(shell, SWT.BORDER | SWT.CHECK | SWT.MULTI);
-		tree.setBounds(10, 10, 192, 389);
+		tree.setBounds(10, 10, 244, 389);
 		
 		Button btnOk = new Button(shell, SWT.NONE);
-		btnOk.setBounds(23, 479, 68, 23);
+		btnOk.setBounds(10, 424, 68, 23);
 		btnOk.setText("OK");
 		
 		Button btnAnuluj = new Button(shell, SWT.NONE);
-		btnAnuluj.setBounds(317, 479, 68, 23);
+		btnAnuluj.setBounds(186, 424, 68, 23);
 		btnAnuluj.setText("Anuluj");
 		
 		for (int i=0;i<10;i++) {
