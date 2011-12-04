@@ -1,5 +1,4 @@
 import java.text.SimpleDateFormat;
-import java.util.List;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -271,14 +270,13 @@ public class mammografia {
 		btnPodglad.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				// TODO to jest tylko do testu
-				OntoDrzewko ro = Onto.getFindingsList();
-				SelectFinding sd = new SelectFinding(shell, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL, ro, null);
-				List<Zauwazone> lch = sd.open();
+				if (podgladZdjec == null)
+					return;
 				
-				sd = new SelectFinding(shell, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL, ro, lch);
-				sd.open();
+				DescribePhotos okno = new DescribePhotos(shell, SWT.DIALOG_TRIM
+						| SWT.PRIMARY_MODAL);
 				
+				okno.open(wyswPacjent, WyswBadanie);
 			}
 		});
 		btnPodglad.setBounds(10, 47, 180, 180);

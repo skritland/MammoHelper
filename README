@@ -1,0 +1,8 @@
+Projekt na przedmiot Systemy Informatyczne w Medycynie o temacie brzmi¹cym:
+"Systemy zapisu, przetwarzania i zarz¹dzania pomiarowymi danymi medycznymi (USG, RTG, TC, NMR, PET, EKG, EEG) - ontologie"
+
+Program wspomagaj¹cy pracê lekarzy i laborantów dodaj¹cych i analizuj¹cych zdjêcia mammograficzne.
+
+Projekt korzysta z ontologii opisanej w: 
+"Developing the GIMI Mammography Ontology in OWL 2 using Protege 4" Igor Toujilov and Paul Taylor,
+dostêpnej pod adresem: http://sourceforge.net/projects/gimimammography/

@@ -42,4 +42,8 @@ class ZdjPodglad {
 		else
 			ktore = ile - 1;
 	}
+	
+	public int num(){
+		return ktore;
+	}
 }
