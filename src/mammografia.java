@@ -1,4 +1,5 @@
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -99,7 +100,7 @@ public class mammografia {
 
 		table = new Table(grpPacjenci, SWT.BORDER | SWT.FULL_SELECTION);
 		table.setLocation(5, 20);
-		table.setSize(340, 312);
+		table.setSize(325, 312);
 		table.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -123,11 +124,11 @@ public class mammografia {
 		tcPESEL.setText("PESEL");
 
 		TableColumn tcStan = new TableColumn(table, SWT.NONE);
-		tcStan.setWidth(56);
+		tcStan.setWidth(50);
 		tcStan.setText("Stan");
 
 		TableColumn tcOstZdj = new TableColumn(table, SWT.NONE);
-		tcOstZdj.setWidth(100);
+		tcOstZdj.setWidth(89);
 		tcOstZdj.setText("Ostatnie zdj\u0119cie");
 
 		// przycisk dodaj pacjenta z bazy*************************
@@ -267,6 +268,19 @@ public class mammografia {
 		grpPodgld.setBounds(570, 0, 200, 440);
 
 		btnPodglad = new Button(grpPodgld, SWT.FLAT);
+		btnPodglad.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				// TODO to jest tylko do testu
+				OntoDrzewko ro = Onto.getFindingsList();
+				SelectFinding sd = new SelectFinding(shell, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL, ro, null);
+				List<Zauwazone> lch = sd.open();
+				
+				sd = new SelectFinding(shell, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL, ro, lch);
+				sd.open();
+				
+			}
+		});
 		btnPodglad.setBounds(10, 47, 180, 180);
 		btnPodglad.setText("Podglad");
 		btnPodglad.setAlignment(SWT.CENTER);

@@ -12,10 +12,10 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 
-public class SelectDiagnosis extends Dialog {
+public class SelectFinding extends Dialog {
 
 	protected OntoDrzewko root;
-	protected List<Choroby> result;
+	protected List<Zauwazone> result;
 	protected Shell shell;
 	protected Tree tree;
 
@@ -25,10 +25,10 @@ public class SelectDiagnosis extends Dialog {
 	 * @param parent
 	 * @param style
 	 */
-	public SelectDiagnosis(Shell parent, int style, OntoDrzewko ro,
-			List<Choroby> res) {
+	public SelectFinding(Shell parent, int style, OntoDrzewko ro,
+			List<Zauwazone> res) {
 		super(parent, style);
-		setText("Wybór diagnozy");
+		setText("Wybór istotnych znalezisk z badania");
 		result = res;
 		root = ro;
 	}
@@ -38,7 +38,7 @@ public class SelectDiagnosis extends Dialog {
 	 * 
 	 * @return the result
 	 */
-	public List<Choroby> open() {
+	public List<Zauwazone> open() {
 		createContents();
 		shell.open();
 		shell.layout();
@@ -66,29 +66,28 @@ public class SelectDiagnosis extends Dialog {
 		btnOk.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				List<Choroby> res = new ArrayList<Choroby>();
+				List<Zauwazone> res = new ArrayList<Zauwazone>();
 				TreeItem[] table = tree.getItems();
-				Choroby cho;
+				Zauwazone zauw;
 				for (TreeItem ti : table) {
 					if (ti.getChecked()) {
-						cho = new Choroby();
-						cho.nazwa = ti.getText();
-						cho.URI = (String) ti.getData();
-						res.add(cho);
+						zauw = new Zauwazone();
+						zauw.nazwa = ti.getText();
+						zauw.URI = (String) ti.getData();
+						res.add(zauw);
 					}
 					TreeItem[] tb2 = ti.getItems();
 					for (TreeItem ti2 : tb2) {
 						if (ti2.getChecked()) {
-							cho = new Choroby();
-							cho.nazwa = ti2.getText();
-							cho.URI = (String) ti2.getData();
-							res.add(cho);
+							zauw = new Zauwazone();
+							zauw.nazwa = ti2.getText();
+							zauw.URI = (String) ti2.getData();
+							res.add(zauw);
 						}
 					}
 
 				}
-				// for (Choroby ccc : res) System.out.println(ccc.nazwa +
-				// "URI: " + ccc.URI);
+
 				result = res;
 				shell.dispose();
 			}
@@ -110,15 +109,15 @@ public class SelectDiagnosis extends Dialog {
 		OntoDrzewko pom1, pom2;
 		ListIterator<OntoDrzewko> li2;
 		TreeItem ti, ti2;
-		Choroby cho = null;
+		Zauwazone zauw = null;
 
 		while (li1.hasNext()) {
 			pom1 = li1.next();
 			ti = new TreeItem(tree, SWT.NONE);
-			cho = new Choroby();
-			cho.URI = pom1.URI;
-			cho.nazwa = pom1.nazwa;
-			if ((result != null) && (result.contains(cho)))
+			zauw = new Zauwazone();
+			zauw.URI = pom1.URI;
+			zauw.nazwa = pom1.nazwa;
+			if ((result != null) && (result.contains(zauw)))
 				ti.setChecked(true);
 			else
 				ti.setChecked(false);
@@ -129,10 +128,10 @@ public class SelectDiagnosis extends Dialog {
 				while (li2.hasNext()) {
 					pom2 = li2.next();
 					ti2 = new TreeItem(ti, SWT.NONE);
-					cho = new Choroby();
-					cho.URI = pom2.URI;
-					cho.nazwa = pom2.nazwa;
-					if ((result != null) && (result.contains(cho)))
+					zauw = new Zauwazone();
+					zauw.URI = pom2.URI;
+					zauw.nazwa = pom2.nazwa;
+					if ((result != null) && (result.contains(zauw)))
 						ti2.setChecked(true);
 					else
 						ti2.setChecked(false);

@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -20,21 +22,22 @@ import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 class Ontology {
 	private final String SzpitalFile = "owl/szpital2.owl";
 	private final String MammoFile = "owl/mammo.owl";
 	private final String Szns = "http://pawel/szpital#";
-	//private final String MammoNS = "http://www.chime.ucl.ac.uk/ontologies/mammo#";
+	private final String MammoNS = "http://www.chime.ucl.ac.uk/ontologies/mammo#";
 	OntModel OModel, OModel2;
 	FileOutputStream FOS;
 
 	Ontology() { // wczytywanie ontologii z pliku
 		OModel = ModelFactory.createOntologyModel(
 				OntModelSpec.OWL_MEM_MINI_RULE_INF, null);
-		OModel2 = ModelFactory.createOntologyModel(
-				OntModelSpec.OWL_MEM, null);
-		//OModel.getDocumentManager().addAltEntry("http://www.chime.ucl.ac.uk/ontologies/mammo", MammoFile);
+		OModel2 = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM, null);
+		// OModel.getDocumentManager().addAltEntry("http://www.chime.ucl.ac.uk/ontologies/mammo",
+		// MammoFile);
 		try {
 			FileInputStream szpitalowl = new FileInputStream(SzpitalFile);
 			OModel.read(szpitalowl, null);
@@ -96,7 +99,8 @@ class Ontology {
 						+ "		?x rdf:type foaf:Patients.\r\n"
 						+ "		?x foaf:name ?y .\r\n"
 						+ "		?x foaf:PESEL ?z .\r\n"
-						+ "		OPTIONAL { ?x foaf:State ?stan . } \r\n" + "		OPTIONAL {\r\n"
+						+ "		OPTIONAL { ?x foaf:State ?stan . } \r\n"
+						+ "		OPTIONAL {\r\n"
 						+ "		?x foaf:has_Doctor ?lek .\r\n"
 						+ "		?lek  foaf:name ?imie .\r\n" + "		}\r\n"
 						+ "		FILTER (!bound(?imie) || ?imie != \"" + doctor
@@ -117,7 +121,7 @@ class Ontology {
 			p.nazwa = qs.getLiteral("y").getString();
 			p.PESEL = qs.getLiteral("z").getString();
 			Literal tmp = qs.getLiteral("stan");
-			p.stan = (tmp == null)?(null):(tmp.getString());
+			p.stan = (tmp == null) ? (null) : (tmp.getString());
 			pacjenci.add(p);
 			// p.stan = qs.getLiteral("s").getString();
 		}
@@ -323,4 +327,90 @@ class Ontology {
 		save();
 	}
 
+	public OntoDrzewko getDiagnosisList() {
+		OntoDrzewko root = new OntoDrzewko();
+		OntClass choroby = OModel2.getOntClass(MammoNS + "Diagnosis");
+		root.nazwa = "Diagnosis"; // pewnie bêdzie nieu¿ywane
+		ExtendedIterator<OntClass> ei = choroby.listSubClasses(true);
+		OntClass pom1 = null;
+		OntClass pom2 = null;
+		ExtendedIterator<OntClass> ei2;
+		OntoDrzewko gal = null;
+		OntoDrzewko gal2 = null;
+		root.dzieci = new ArrayList<OntoDrzewko>();
+		while (ei.hasNext()) {
+			pom1 = ei.next();
+			gal = new OntoDrzewko();
+			gal.URI = pom1.getURI();
+			gal.nazwa = pom1.getLocalName().replace('_', ' ');
+			gal.wybrane = false;
+			gal.wybraneDziecko = false;
+
+			if (!pom1.hasSubClass())
+				gal.dzieci = null;
+			else {
+				ei2 = pom1.listSubClasses(true);
+				gal.dzieci = new ArrayList<OntoDrzewko>();
+				while (ei2.hasNext()) {
+					pom2 = ei2.next();
+					gal2 = new OntoDrzewko();
+					gal2.dzieci = null;
+					gal2.URI = pom2.getURI();
+					gal2.nazwa = pom2.getLocalName().replace('_', ' ');
+					//System.out.println(gal2.nazwa);
+					gal2.wybrane = false;
+					gal2.wybraneDziecko = false;
+					gal.dzieci.add(gal2);
+				}
+				Collections.sort(gal.dzieci);
+			}
+			root.dzieci.add(gal);
+		}
+		Collections.sort(root.dzieci);
+		return root;
+	}
+
+	public OntoDrzewko getFindingsList() {
+		OntoDrzewko root = new OntoDrzewko();
+		OntClass zauwazone = OModel2.getOntClass(MammoNS + "Finding");
+		root.nazwa = "Finding"; // pewnie bêdzie nieu¿ywane
+		ExtendedIterator<OntClass> ei = zauwazone.listSubClasses(true);
+		OntClass pom1 = null;
+		OntClass pom2 = null;
+		ExtendedIterator<OntClass> ei2;
+		OntoDrzewko gal = null;
+		OntoDrzewko gal2 = null;
+		root.dzieci = new ArrayList<OntoDrzewko>();
+		while (ei.hasNext()) {
+			pom1 = ei.next();
+			gal = new OntoDrzewko();
+			gal.URI = pom1.getURI();
+			gal.nazwa = pom1.getLocalName().replace('_', ' ');
+			gal.wybrane = false;
+			gal.wybraneDziecko = false;
+
+			if (!pom1.hasSubClass())
+				gal.dzieci = null;
+			else {
+				ei2 = pom1.listSubClasses(true);
+				gal.dzieci = new ArrayList<OntoDrzewko>();
+				while (ei2.hasNext()) {
+					pom2 = ei2.next();
+					gal2 = new OntoDrzewko();
+					gal2.dzieci = null;
+					gal2.URI = pom2.getURI();
+					gal2.nazwa = pom2.getLocalName().replace('_', ' ');
+					//System.out.println(gal2.nazwa);
+					gal2.wybrane = false;
+					gal2.wybraneDziecko = false;
+					gal.dzieci.add(gal2);
+				}
+				Collections.sort(gal.dzieci);
+			}
+			root.dzieci.add(gal);
+		}
+		Collections.sort(root.dzieci);
+		return root;
+	}	
+	
 }
