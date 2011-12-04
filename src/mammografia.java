@@ -15,6 +15,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.List;
 
 /**
  * @author skritland
@@ -32,6 +33,7 @@ public class mammografia {
 	private Table table;
 	private Badanie WyswBadanie; // wyświetlane zdjęcia pacjenta
 	private ZdjPodglad podgladZdjec;
+	List liIstotneCechy;
 	Button btnPodglad;
 	public Combo admins;
 	private Table lista_badan;
@@ -80,14 +82,13 @@ public class mammografia {
 	}
 
 	private void startInUserMode() {
-		//SelectDiagnosis sd = new SelectDiagnosis(shell, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
-		
+		// SelectDiagnosis sd = new SelectDiagnosis(shell, SWT.DIALOG_TRIM |
+		// SWT.APPLICATION_MODAL);
+
 		// tworzenie tabeli pacjentów ***************************************
 		Composite compPacjenci = new Composite(shell, SWT.NONE);
 		compPacjenci.setLocation(0, 40);
 		compPacjenci.setSize(780, 500);
-
-
 
 		// *******************************pacjenci*****************************
 
@@ -265,20 +266,21 @@ public class mammografia {
 		grpPodgld.setBounds(570, 0, 200, 440);
 
 		btnPodglad = new Button(grpPodgld, SWT.FLAT);
-		btnPodglad.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				if (podgladZdjec == null)
-					return;
-				
-				DescribePhotos okno = new DescribePhotos(shell, SWT.DIALOG_TRIM
-						| SWT.PRIMARY_MODAL, Onto);
-				
-				WyswBadanie = okno.open(WyswBadanie);
-				Onto.updateExamination(WyswBadanie);
-				
-			}
-		});
+		if (WUser.isDoctor)
+			btnPodglad.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					if (podgladZdjec == null)
+						return;
+
+					DescribePhotos okno = new DescribePhotos(shell,
+							SWT.DIALOG_TRIM | SWT.PRIMARY_MODAL, Onto);
+
+					WyswBadanie = okno.open(WyswBadanie);
+					Onto.updateExamination(WyswBadanie);
+
+				}
+			});
 		btnPodglad.setBounds(10, 47, 180, 180);
 		btnPodglad.setText("Podglad");
 		btnPodglad.setAlignment(SWT.CENTER);
@@ -298,6 +300,13 @@ public class mammografia {
 		Button btnNext = new Button(grpPodgld, SWT.ARROW | SWT.RIGHT);
 		btnNext.setBounds(149, 233, 40, 23);
 		btnNext.setText("Next");
+		
+		liIstotneCechy = new List(grpPodgld, SWT.BORDER);
+		liIstotneCechy.setBounds(10, 284, 180, 146);
+		
+		Label lblIstotneCechy = new Label(grpPodgld, SWT.NONE);
+		lblIstotneCechy.setBounds(10, 265, 70, 13);
+		lblIstotneCechy.setText("Istotne cechy:");
 		btnNext.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				if (podgladZdjec == null)
@@ -361,8 +370,8 @@ public class mammografia {
 		shell = new Shell();
 		shell.setSize(800, 540);
 		shell.setText("Mammografia");
-		shell.setLayout(null);		
-		
+		shell.setLayout(null);
+
 		ClblUytkownika = new Label(shell, SWT.NONE);
 		ClblUytkownika.setEnabled(true);
 		ClblUytkownika.setAlignment(SWT.CENTER);
@@ -416,9 +425,14 @@ public class mammografia {
 		podgladZdjec = pz;
 		if (pz == null) {
 			btnPodglad.setImage(null);
+			liIstotneCechy.removeAll();
 		} else {
 			Point size = btnPodglad.getSize();
 			btnPodglad.setImage(pz.getImage(size.x, size.y));
+			liIstotneCechy.removeAll();
+			if (WyswBadanie.zauwazone != null)
+			for (Zauwazone zau : WyswBadanie.zauwazone)
+				liIstotneCechy.add(zau.nazwa);
 		}
 	}
 }

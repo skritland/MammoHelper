@@ -82,15 +82,17 @@ public class DescribePhotos extends Dialog {
 
 	private void refreshChoroby() {
 		liChoroby.removeAll();
-		for (Choroby cho : badanie.choroby)
-			liChoroby.add(cho.nazwa);
+		if (badanie.choroby != null)
+			for (Choroby cho : badanie.choroby)
+				liChoroby.add(cho.nazwa);
 
 	}
 
 	private void refreshZauw() {
 		liZauw.removeAll();
-		for (Zauwazone zau : badanie.zauwazone)
-			liZauw.add(zau.nazwa);
+		if (badanie.choroby != null)
+			for (Zauwazone zau : badanie.zauwazone)
+				liZauw.add(zau.nazwa);
 	}
 
 	/**
@@ -99,7 +101,8 @@ public class DescribePhotos extends Dialog {
 	private void createContents() {
 		shell = new Shell(getParent(), getStyle());
 		shell.setSize(863, 443);
-		shell.setText("Pacjent: " + badanie.pacjent.nazwa + " / Badanie: " + data);
+		shell.setText("Pacjent: " + badanie.pacjent.nazwa + " / Badanie: "
+				+ data);
 		shell.setLayout(null);
 
 		Group group = new Group(shell, SWT.NONE);
@@ -189,8 +192,10 @@ public class DescribePhotos extends Dialog {
 		for (String s : STANYPACJENTA) {
 			cmbStanPacjenta.add(s);
 		}
-		if (badanie.pacjent.stan == null) cmbStanPacjenta.setText(STANYPACJENTA[0]);
-		else cmbStanPacjenta.setText(badanie.pacjent.stan);
+		if (badanie.pacjent.stan == null)
+			cmbStanPacjenta.setText(STANYPACJENTA[0]);
+		else
+			cmbStanPacjenta.setText(badanie.pacjent.stan);
 
 		Label lblOcenaZdjecia = new Label(shell, SWT.NONE);
 		lblOcenaZdjecia.setBounds(264, 317, 74, 13);
@@ -200,8 +205,10 @@ public class DescribePhotos extends Dialog {
 		for (String s : OCENYBADANIA) {
 			cmbOcenaZdjecia.add(s);
 		}
-		if (badanie.ocena == null) cmbOcenaZdjecia.setText(OCENYBADANIA[0]);
-		else cmbOcenaZdjecia.setText(badanie.ocena);
+		if (badanie.ocena == null)
+			cmbOcenaZdjecia.setText(OCENYBADANIA[0]);
+		else
+			cmbOcenaZdjecia.setText(badanie.ocena);
 
 		Label lblDataBadania = new Label(shell, SWT.NONE);
 		lblDataBadania.setBounds(538, 336, 234, 13);
@@ -228,7 +235,7 @@ public class DescribePhotos extends Dialog {
 		});
 		btnAnuluj.setBounds(730, 386, 68, 23);
 		btnAnuluj.setText("Anuluj");
-		
+
 		refreshChoroby();
 		refreshZauw();
 		refresh();

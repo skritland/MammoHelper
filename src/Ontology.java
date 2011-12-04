@@ -92,7 +92,7 @@ class Ontology {
 						+ "		?x foaf:has_Doctor ?lek .\r\n"
 						+ "		?x foaf:name ?y .\r\n"
 						+ "		?x foaf:PESEL ?z .\r\n"
-						+ "		OPTIONAL { ?x foaf:State ?stan . } \r\n" + "}";
+						+ "		OPTIONAL { ?x foaf:State ?stan . } \r\n" + "}" + "\r\nORDER BY ?y";
 			else
 				querys = "PREFIX foaf: <http://pawel/szpital#>\r\n"
 						+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
@@ -105,14 +105,14 @@ class Ontology {
 						+ "		?x foaf:has_Doctor ?lek .\r\n"
 						+ "		?lek  foaf:name ?imie .\r\n" + "		}\r\n"
 						+ "		FILTER (!bound(?imie) || ?imie != \"" + doctor
-						+ "\") .\r\n" + "	}";
+						+ "\") .\r\n" + "	}" + "\r\nORDER BY ?y";
 		} else
 			querys = "PREFIX foaf: <http://pawel/szpital#>\r\n"
 					+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
 					+ "SELECT ?y ?z ?stan\r\n" + "WHERE { \r\n"
 					+ "		?x rdf:type foaf:Patients .\r\n"
 					+ "		?x foaf:name ?y .\r\n" + "		?x foaf:PESEL ?z .\r\n"
-					+ "		OPTIONAL { ?x foaf:State ?stan . } \r\n" + "}";
+					+ "		OPTIONAL { ?x foaf:State ?stan . } \r\n" + "}" + "\r\nORDER BY ?y";
 		Query query = QueryFactory.create(querys);
 		QueryExecution qe = QueryExecutionFactory.create(query, OModel);
 		com.hp.hpl.jena.query.ResultSet results = qe.execSelect();
@@ -244,7 +244,7 @@ class Ontology {
 				+ "		?x rdf:type foaf:Mammography_Examination.\r\n"
 				+ "		?x foaf:of_Patient <" + pac.URI + "> .\r\n"
 				+ "		?x foaf:creat_date ?y .\r\n"
-				+ "		OPTIONAL { ?x foaf:ocena ?o . } \r\n" + "	}";
+				+ "		OPTIONAL { ?x foaf:ocena ?o . } \r\n" + "	}" + "\r\nORDER BY DESC(?y)";
 		Query query = QueryFactory.create(querys);
 		QueryExecution qe = QueryExecutionFactory.create(query, OModel);
 		com.hp.hpl.jena.query.ResultSet results = qe.execSelect();
