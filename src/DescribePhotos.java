@@ -76,8 +76,8 @@ public class DescribePhotos extends Dialog {
 	private void refresh() {
 		Point size = view.getSize();
 		view.setImage(podglad.getImage(size.x, size.y));
-		lblZdjcie.setText("Zdj\u0119cie #" + (podglad.num() + 1) + "/"
-				+ podglad.ile());
+		lblZdjcie.setText("Zdj\u0119cie " + (podglad.num() + 1) + "/"
+				+ podglad.ile() + " " + podglad.view());
 	}
 
 	private void refreshChoroby() {

@@ -18,11 +18,19 @@ class ZdjPodglad {
 	public Image getImage(int x, int y) {
 		ImageData imd = new ImageData(mammografia.lokalizacja
 				+ zdjecia.get(ktore).nazwapliku);
-		//System.out.println(Integer.toString(x) + " " + Integer.toString(y));
-		//System.out.println(Integer.toString(imd.width) + " " + Integer.toString(imd.height));
-		int max = (x>y)?x:y;
-		int mino = (imd.height<imd.width)?imd.height:imd.width;
-		double scale = (double)max/(double)mino;
+
+		//int max = (x>y)?x:y;
+		boolean isBiggerWidth = (imd.height<imd.width)?true:false;
+		double scale;
+		if (isBiggerWidth)
+		{
+			//if (((double)x)/((double)y) > ((double)imd.width)/((double)imd.height))
+			scale = (double)x/(double)imd.width;
+		}
+		else
+		{
+			scale = (double)y/(double)imd.height;
+		}
 		ImageData imds = imd.scaledTo((int)(scale*imd.width), (int)(scale*imd.height));
 		//System.out.println(Integer.toString(imds.width) + " " + Integer.toString(imds.height));
 		//System.out.println("***");
@@ -49,5 +57,9 @@ class ZdjPodglad {
 	
 	public int ile(){
 		return ile;
+	}
+	
+	public String view() {
+		return zdjecia.get(ktore).widok;
 	}
 }

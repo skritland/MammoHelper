@@ -11,6 +11,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.Point;
 
 public class DodNowZdj extends Dialog {
 
@@ -83,7 +84,22 @@ public class DodNowZdj extends Dialog {
 				{
 					lblPlik.setText(fn);
 					ImageData imd = new ImageData(fn);
-					lblPodglad.setImage(new Image(Display.getDefault(), imd));
+					
+					boolean isBiggerWidth = (imd.height<imd.width)?true:false;
+					double scale;
+					Point pp = lblPodglad.getSize();
+					if (isBiggerWidth)
+					{
+						//if (((double)x)/((double)y) > ((double)imd.width)/((double)imd.height))
+						scale = (double)pp.x/(double)imd.width;
+					}
+					else
+					{
+						scale = (double)pp.y/(double)imd.height;
+					}
+					ImageData imds = imd.scaledTo((int)(scale*imd.width), (int)(scale*imd.height));
+					
+					lblPodglad.setImage(new Image(Display.getDefault(), imds));
 				}
 				else {
 					lblPlik.setText("");

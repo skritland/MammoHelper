@@ -278,6 +278,8 @@ public class mammografia {
 
 					WyswBadanie = okno.open(WyswBadanie);
 					Onto.updateExamination(WyswBadanie);
+					fillImagesTable(Onto.getExaminationsOfPatient(wyswPacjent));
+					setImagesPreview(new ZdjPodglad(WyswBadanie.zdjecia));
 
 				}
 			});
@@ -426,9 +428,11 @@ public class mammografia {
 		podgladZdjec = pz;
 		if (pz == null) {
 			btnPodglad.setImage(null);
+			btnPodglad.setText("Podgląd");
 			liIstotneCechy.removeAll();
 		} else {
 			Point size = btnPodglad.getSize();
+			btnPodglad.setText("");
 			btnPodglad.setImage(pz.getImage(size.x, size.y));
 			liIstotneCechy.removeAll();
 			if (WyswBadanie.zauwazone != null)
