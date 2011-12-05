@@ -144,7 +144,7 @@ public class DescribePhotos extends Dialog {
 		lblChoroby.setBounds(264, 10, 59, 14);
 		lblChoroby.setText("Choroby:");
 
-		liChoroby = new List(shell, SWT.BORDER);
+		liChoroby = new List(shell, SWT.BORDER | SWT.V_SCROLL);
 		liChoroby.setBounds(264, 30, 260, 210);
 
 		Button btEdytujChoroby = new Button(shell, SWT.NONE);
@@ -162,7 +162,7 @@ public class DescribePhotos extends Dialog {
 		btEdytujChoroby.setText("Edytuj");
 		btEdytujChoroby.setBounds(450, 246, 74, 28);
 
-		liZauw = new List(shell, SWT.BORDER);
+		liZauw = new List(shell, SWT.BORDER | SWT.V_SCROLL);
 		liZauw.setBounds(538, 30, 260, 210);
 
 		Button btnEdytujZauw = new Button(shell, SWT.NONE);

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="create_run_jar" name="Create Runnable Jar for Project MammoHelper with Jar-in-Jar Loader">
+    <!--this file was created by Eclipse Runnable JAR Export Wizard-->
+    <!--ANT 1.7 is required                                        -->
+    <target name="create_run_jar">
+        <jar destfile="E:/robocze/eclipse/MammoHelper/dist/win/MammoHelper.jar">
+            <manifest>
+                <attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader"/>
+                <attribute name="Rsrc-Main-Class" value="mammografia"/>
+                <attribute name="Class-Path" value="."/>
+                <attribute name="Rsrc-Class-Path" value="./ jena-2.6.4.jar arq-2.8.7.jar icu4j-3.4.4.jar iri-0.8.jar jena-2.6.4-tests.jar junit-4.5.jar log4j-1.2.13.jar lucene-core-2.3.1.jar slf4j-api-1.5.8.jar slf4j-log4j12-1.5.8.jar stax-api-1.0.1.jar wstx-asl-3.2.9.jar xercesImpl-2.7.1.jar swt.jar"/>
+            </manifest>
+            <zipfileset src="jar-in-jar-loader.zip"/>
+            <fileset dir="E:/robocze/eclipse/MammoHelper/bin"/>
+            <zipfileset dir="E:\robocze\eclipse\MammoHelper\lib" includes="jena-2.6.4.jar"/>
+            <zipfileset dir="E:\robocze\eclipse\MammoHelper\lib" includes="arq-2.8.7.jar"/>
+            <zipfileset dir="E:\robocze\eclipse\MammoHelper\lib" includes="icu4j-3.4.4.jar"/>
+            <zipfileset dir="E:\robocze\eclipse\MammoHelper\lib" includes="iri-0.8.jar"/>
+            <zipfileset dir="E:\robocze\eclipse\MammoHelper\lib" includes="jena-2.6.4-tests.jar"/>
+            <zipfileset dir="E:\robocze\eclipse\MammoHelper\lib" includes="junit-4.5.jar"/>
+            <zipfileset dir="E:\robocze\eclipse\MammoHelper\lib" includes="log4j-1.2.13.jar"/>
+            <zipfileset dir="E:\robocze\eclipse\MammoHelper\lib" includes="lucene-core-2.3.1.jar"/>
+            <zipfileset dir="E:\robocze\eclipse\MammoHelper\lib" includes="slf4j-api-1.5.8.jar"/>
+            <zipfileset dir="E:\robocze\eclipse\MammoHelper\lib" includes="slf4j-log4j12-1.5.8.jar"/>
+            <zipfileset dir="E:\robocze\eclipse\MammoHelper\lib" includes="stax-api-1.0.1.jar"/>
+            <zipfileset dir="E:\robocze\eclipse\MammoHelper\lib" includes="wstx-asl-3.2.9.jar"/>
+            <zipfileset dir="E:\robocze\eclipse\MammoHelper\lib" includes="xercesImpl-2.7.1.jar"/>
+            <fileset dir="E:/robocze/eclipse/org.eclipse.swt"/>
+            <zipfileset dir="E:\robocze\eclipse\org.eclipse.swt" includes="swt.jar"/>
+        </jar>
+    </target>
+</project>

@@ -165,6 +165,7 @@ public class mammografia {
 		btnUsuPacjenta.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				if ((table.getSelection() == null) || table.getSelection().length == 0) return;
 				Pacjent pac = Onto.getPatientByPESEL(table.getSelection()[0]
 						.getText(1));
 				Onto.removePatient(pac);
@@ -303,7 +304,7 @@ public class mammografia {
 		btnNext.setBounds(149, 233, 40, 23);
 		btnNext.setText("Next");
 
-		liIstotneCechy = new List(grpPodgld, SWT.BORDER);
+		liIstotneCechy = new List(grpPodgld, SWT.BORDER | SWT.V_SCROLL);
 		liIstotneCechy.setBounds(10, 284, 180, 146);
 
 		Label lblIstotneCechy = new Label(grpPodgld, SWT.NONE);
