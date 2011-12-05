@@ -215,11 +215,11 @@ public class mammografia {
 
 		TableColumn tblclmnDataWykonania = new TableColumn(lista_badan,
 				SWT.NONE);
-		tblclmnDataWykonania.setWidth(90);
-		tblclmnDataWykonania.setText("Data wykonania");
+		tblclmnDataWykonania.setWidth(70);
+		tblclmnDataWykonania.setText("Data");
 
 		TableColumn tblclmnOcena = new TableColumn(lista_badan, SWT.NONE);
-		tblclmnOcena.setWidth(94);
+		tblclmnOcena.setWidth(116);
 		tblclmnOcena.setText("Ocena");
 
 		Button btnDodajZdjcie_1 = new Button(badania, SWT.NONE);
@@ -300,10 +300,10 @@ public class mammografia {
 		Button btnNext = new Button(grpPodgld, SWT.ARROW | SWT.RIGHT);
 		btnNext.setBounds(149, 233, 40, 23);
 		btnNext.setText("Next");
-		
+
 		liIstotneCechy = new List(grpPodgld, SWT.BORDER);
 		liIstotneCechy.setBounds(10, 284, 180, 146);
-		
+
 		Label lblIstotneCechy = new Label(grpPodgld, SWT.NONE);
 		lblIstotneCechy.setBounds(10, 265, 70, 13);
 		lblIstotneCechy.setText("Istotne cechy:");
@@ -388,6 +388,7 @@ public class mammografia {
 		else
 			pacli = Onto.getPatients(null, true);
 		java.util.ListIterator<Pacjent> iter = pacli.listIterator();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
 		while (iter.hasNext()) {
 			Pacjent pac = iter.next();
@@ -397,8 +398,8 @@ public class mammografia {
 							pac.nazwa,
 							pac.PESEL,
 							(pac.stan == null) ? "Nieznany" : pac.stan,
-							(pac.ostatbad == null) ? "Nigdy" : pac.ostatbad
-									.toString() });
+							(pac.ostatbad == null) ? "Nigdy" : sdf
+									.format(pac.ostatbad) });
 		}
 
 	}
@@ -431,8 +432,8 @@ public class mammografia {
 			btnPodglad.setImage(pz.getImage(size.x, size.y));
 			liIstotneCechy.removeAll();
 			if (WyswBadanie.zauwazone != null)
-			for (Zauwazone zau : WyswBadanie.zauwazone)
-				liIstotneCechy.add(zau.nazwa);
+				for (Zauwazone zau : WyswBadanie.zauwazone)
+					liIstotneCechy.add(zau.nazwa);
 		}
 	}
 }

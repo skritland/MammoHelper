@@ -6,6 +6,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -87,7 +88,7 @@ class Ontology {
 		if (doctor != null) {
 			if (doktora == true)
 				querys = "PREFIX foaf: <http://pawel/szpital#>\r\n"
-						+ "SELECT ?y ?z ?stan\r\n" + "WHERE { \r\n"
+						+ "SELECT ?x ?y ?z ?stan\r\n" + "WHERE { \r\n"
 						+ "		?lek foaf:name  \"" + doctor + "\" .\r\n"
 						+ "		?x foaf:has_Doctor ?lek .\r\n"
 						+ "		?x foaf:name ?y .\r\n"
@@ -96,7 +97,7 @@ class Ontology {
 			else
 				querys = "PREFIX foaf: <http://pawel/szpital#>\r\n"
 						+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
-						+ "SELECT ?y ?z ?stan WHERE { \r\n"
+						+ "SELECT ?x ?y ?z ?stan WHERE { \r\n"
 						+ "		?x rdf:type foaf:Patients.\r\n"
 						+ "		?x foaf:name ?y .\r\n"
 						+ "		?x foaf:PESEL ?z .\r\n"
@@ -109,7 +110,7 @@ class Ontology {
 		} else
 			querys = "PREFIX foaf: <http://pawel/szpital#>\r\n"
 					+ "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\n"
-					+ "SELECT ?y ?z ?stan\r\n" + "WHERE { \r\n"
+					+ "SELECT ?x ?y ?z ?stan\r\n" + "WHERE { \r\n"
 					+ "		?x rdf:type foaf:Patients .\r\n"
 					+ "		?x foaf:name ?y .\r\n" + "		?x foaf:PESEL ?z .\r\n"
 					+ "		OPTIONAL { ?x foaf:State ?stan . } \r\n" + "}" + "\r\nORDER BY ?y";
@@ -119,12 +120,13 @@ class Ontology {
 		while (results.hasNext()) {
 			QuerySolution qs = results.next();
 			Pacjent p = new Pacjent();
+			p.URI = qs.getResource("x").getURI();
 			p.nazwa = qs.getLiteral("y").getString();
 			p.PESEL = qs.getLiteral("z").getString();
 			Literal tmp = qs.getLiteral("stan");
 			p.stan = (tmp == null) ? (null) : (tmp.getString());
 			pacjenci.add(p);
-			// p.stan = qs.getLiteral("s").getString();
+			p.ostatbad = getLastExaminationDate(p);
 		}
 		qe.close();
 		return pacjenci;
@@ -155,9 +157,18 @@ class Ontology {
 			p.URI = qs.getResource("x").getURI();
 			Literal lit = qs.getLiteral("s");
 			p.stan = (lit == null) ? null : lit.getString();
+			p.ostatbad = getLastExaminationDate(p);
 		}
 		qe.close();
 		return p;
+	}
+	
+	java.util.Date getLastExaminationDate(Pacjent pac) {
+		List<Badanie> liba = getExaminationsOfPatient(pac);
+		Date dat = null;
+		if ((liba != null) && (!liba.isEmpty()))
+		dat = liba.get(0).dataBadania;
+		return dat;
 	}
 
 	Worker getWorkerByName(String worname) {

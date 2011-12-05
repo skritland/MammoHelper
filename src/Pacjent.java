@@ -1,4 +1,4 @@
-import java.sql.Date;
+import java.util.Date;
 
 class Pacjent {
 

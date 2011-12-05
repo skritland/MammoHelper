@@ -1,4 +1,8 @@
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -88,10 +92,13 @@ public class DodNowBad extends Dialog {
 				{
 					int dot = zzzd.nazwapliku.lastIndexOf('.');
 					String fname = result.pacjent.PESEL + "_" + sdf.format(result.dataBadania) + "_" + zzzd.widok + zzzd.nazwapliku.substring(dot);
-					java.nio.file.Path source = java.nio.file.Paths.get(zzzd.nazwapliku);
-					java.nio.file.Path dest = java.nio.file.Paths.get(mammografia.lokalizacja + fname);
+					//java.nio.file.Path source = java.nio.file.Paths.get(zzzd.nazwapliku);
+					//java.nio.file.Path dest = java.nio.file.Paths.get(mammografia.lokalizacja + fname);
+					File source = new File(zzzd.nazwapliku);
+					File dest = new File(mammografia.lokalizacja + fname);
 					try {
-						java.nio.file.Files.copy(source, dest, java.nio.file.StandardCopyOption.COPY_ATTRIBUTES);
+						//java.nio.file.Files.copy(source, dest, java.nio.file.StandardCopyOption.COPY_ATTRIBUTES);
+						copyFile(source, dest);
 					} catch (IOException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -153,5 +160,27 @@ public class DodNowBad extends Dialog {
 		lblDataBadania.setBounds(134, 165, 68, 13);
 		lblDataBadania.setText("Data badania:");
 
+	}
+	
+	public static void copyFile(File sourceFile, File destFile) throws IOException {
+		 if(!destFile.exists()) {
+		  destFile.createNewFile();
+		 }
+		 
+		 FileChannel source = null;
+		 FileChannel destination = null;
+		 try {
+		  source = new FileInputStream(sourceFile).getChannel();
+		  destination = new FileOutputStream(destFile).getChannel();
+		  destination.transferFrom(source, 0, source.size());
+		 }
+		 finally {
+		  if(source != null) {
+		   source.close();
+		  }
+		  if(destination != null) {
+		   destination.close();
+		  }
+		}
 	}
 }
